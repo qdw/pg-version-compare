@@ -1,7 +1,5 @@
 package PGX::Build;
 
-# $Id: Build.pm 4448 2009-01-20 23:55:50Z david $
-
 use strict;
 use warnings;
 

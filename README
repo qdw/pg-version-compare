@@ -1,1 +1,1 @@
-pg-version-compare repo
+Run script/pgx_versioncompare_server.pl to test the application.

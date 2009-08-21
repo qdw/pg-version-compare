@@ -1,0 +1,6 @@
+---
+name: PGVersionCompare
+Model::DBI:
+  dsn: dbi:Pg:dbname=version_compare_stage
+  user: postgres
+  password: ''

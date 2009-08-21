@@ -1,8 +1,9 @@
 use strict;
 use warnings;
-use Module::Build;
+use lib 'lib';
+use PGX::Build;
 
-my $build = Module::Build->new(
+my $build = PGX::Build->new(
     module_name        => 'PGX::VersionCompare',
     license            => 'restrictive',
     test_file_exts     => [qw(.t .s)],

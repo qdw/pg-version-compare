@@ -33,6 +33,10 @@ sub index :Path :Args(0) {
     $c->response->body( $c->welcome_message );
 }
 
+=head2 default
+
+=cut
+
 sub default :Path {
     my ( $self, $c ) = @_;
     $c->response->body( 'Page not found' );

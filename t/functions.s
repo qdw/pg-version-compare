@@ -1,6 +1,6 @@
 BEGIN;
---SELECT plan( 6 );
-SELECT * FROM no_plan();
+SELECT plan( 24 );
+--SELECT * FROM no_plan();
 
 /****************************************************************************/
 -- What does the major_versions() function look like?
@@ -101,6 +101,7 @@ SELECT is(
     'parse_fti_string() should group quoted strings separate from other terms'
 );
 
-
+/****************************************************************************/
+-- Finish up and go home.
 SELECT * FROM finish();
 ROLLBACK;

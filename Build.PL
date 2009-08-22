@@ -14,6 +14,7 @@ my $build = PGX::Build->new(
         'TAP::Harness'  => '3.13',
     },
     requires           => {
+        'perl'                              => 5.010,
         'Catalyst::Runtime'                 => '5.80008',
         'Catalyst::Plugin::ConfigLoader'    => 0,
         'Catalyst::Plugin::Static::Simple'  => 0,

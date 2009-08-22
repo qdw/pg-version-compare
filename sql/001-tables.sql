@@ -13,12 +13,12 @@ BEGIN;
 --
 
 CREATE TABLE fixes (
-    super     integer NOT NULL,
-    major     integer NOT NULL,
-    minor     integer NOT NULL,
-    fix_md5   text    NOT NULL,
-    fix_desc  text    NOT NULL,
-    fix_tsv   tsvector
+    super     integer  NOT NULL,
+    major     integer  NOT NULL,
+    minor     integer  NOT NULL,
+    fix_md5   text     NOT NULL,
+    fix_desc  text     NOT NULL,
+    fix_tsv   tsvector NOT NULL
 );
 
 
@@ -30,7 +30,7 @@ CREATE TABLE versions (
     super           integer NOT NULL,
     major           integer NOT NULL,
     minor           integer NOT NULL,
-    upgrade_warning text,
+    upgrade_warning text    NOT NULL,
     CONSTRAINT versions_major_check CHECK (major >= 0 AND major < 50),
     CONSTRAINT versions_minor_check CHECK (minor >= 0 AND minor < 100),
     CONSTRAINT versions_super_check CHECK (super >= 7 AND super < 20)

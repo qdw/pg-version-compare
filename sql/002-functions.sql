@@ -88,35 +88,31 @@ CREATE FUNCTION minor_versions(
     FROM   versions
     WHERE  super = substring($1 from $x$(\d+)\.\d+$x$)::INT
     AND    major = substring($1 from $x$\d+\.(\d+)$x$)::INT
-    ORDER BY version_minor;
+    ORDER BY minor;
 $$;
 
 CREATE FUNCTION parse_fti_string(
     expression text
 ) RETURNS text LANGUAGE plperl IMMUTABLE STRICT AS $_X$
+    (my $exp = shift) =~ s/["']([^"']*?)["']/($1)/g;
     my $result;
-    for ( shift ) {
-
-        s/["']([^"']*?)["']/($1)/g;
-
-        for (split /\s+/) {
-            s/([^\w()&|!-])//g;
-            if (/^and$/i) {
-                $result .= " &" if defined $result and $result !~ /[|&]$/;
-            } elsif (/^or$/i) {
-                $result .= " |" if defined $result and $result !~ /[|&]$/;
-            } elsif (/^not$/i) {
-                $result .= " !" if defined $result and $result !~ /[|&!]$/;
+    for (split /\s+/, $exp) {
+        s/([^\w()&|!-])//g;
+        if (/^and$/i) {
+            $result .= " &" if defined $result and $result !~ /[|&]$/;
+        } elsif (/^or$/i) {
+            $result .= " |" if defined $result and $result !~ /[|&]$/;
+        } elsif (/^not$/i) {
+            $result .= " !" if defined $result and $result !~ /[|&!]$/;
+        } else {
+            if (!defined $result) {
+                $result = $_;
+            } elsif ( $result =~ /[(|&!]$/ ) {
+                $result .= " " . $_;
             } else {
-                if (!defined $result) {
-                    $result = $_ ;
-                } elsif ( $result =~ /[(|&!]$/ ) {
-                    $result .= " " . $_ ;
-                } else {
-                    $result .= " & " . $_ ;
-                }
-                $result =~ s/(\w*)([)]?)$/$1:*$2/ ;
+                $result .= " & " . $_;
             }
+            $result =~ s/(\w*)([)]?)$/$1:*$2/;
         }
     }
 

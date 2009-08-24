@@ -1,5 +1,5 @@
 BEGIN;
-SELECT plan( 43 );
+SELECT plan( 49 );
 --SELECT * FROM no_plan();
 
 /****************************************************************************/
@@ -173,7 +173,58 @@ SELECT is( COUNT(*), 0::bigint, 'get_fixes() should return no rows for same mino
 FROM get_fixes('8.0', 2, 2, '');
 
 PREPARE have_fixes AS SELECT version, warning FROM get_fixes($1, $2, $3, $4);
+PREPARE want_fixes AS SELECT $1 || '.' || $2 || '.' || minor::TEXT, fix_desc
+    FROM   fixes
+    WHERE  super = $1::int
+      AND  major = $2::int
+      AND  minor > ( $3::int )
+      AND  minor <= ( $4::int )
+    ORDER BY super, major, minor, fix_desc;
 
+PREPARE want_ftfixes AS SELECT $1 || '.' || $2 || '.' || minor::TEXT, fix_desc
+    FROM   fixes
+    WHERE  super = $1::int
+      AND  major = $2::int
+      AND  minor > ( $3::int )
+      AND  minor <= ( $4::int )
+      AND  fix_tsv @@ to_tsquery($5)
+    ORDER BY super, major, minor, fix_desc;
+
+SELECT results_eq(
+    $$ EXECUTE have_fixes('8.0', 2, 3, '') $$,
+    $$ EXECUTE want_fixes(8, 0, 2, 3) $$,
+    'get_fixes() should return the proper rows for 8.0'
+);
+
+SELECT results_eq(
+    $$ EXECUTE have_fixes('8', 2, 3, '') $$,
+    $$ EXECUTE want_fixes(8, 0, 2, 3) $$,
+    'get_fixes() should return the proper rows for 8'
+);
+
+SELECT results_eq(
+    $$ EXECUTE have_fixes('8.3', 1, 4, '') $$,
+    $$ EXECUTE want_fixes(8, 3, 1, 4) $$,
+    'get_fixes() should return the proper rows for 8.3'
+);
+
+SELECT results_eq(
+    $$ EXECUTE have_fixes('8.0', 2, 3, 'pg_dump') $$,
+    $$ EXECUTE want_ftfixes(8, 0, 2, 3, 'pg_dump') $$,
+    'get_fixes() should return the proper rows for 8.0 + FT search'
+);
+
+SELECT results_eq(
+    $$ EXECUTE have_fixes('8', 2, 3, 'pg_dump') $$,
+    $$ EXECUTE want_ftfixes(8, 0, 2, 3, 'pg_dump') $$,
+    'get_fixes() should return the proper rows for 8 + FT search'
+);
+
+SELECT results_eq(
+    $$ EXECUTE have_fixes('8.3', 1, 4, 'pg_dump') $$,
+    $$ EXECUTE want_ftfixes(8, 3, 1, 4, 'pg_dump') $$,
+    'get_fixes() should return the proper rows for 8.3 + FT search'
+);
 
 /****************************************************************************/
 -- Finish up and go home.

@@ -17,7 +17,7 @@ CREATE FUNCTION get_fixes(
     OUT warning   text
 ) RETURNS SETOF record LANGUAGE plpgsql AS $$
 DECLARE
-    vversion TEXT := CASE WHEN strpos(major_version, '.') > 0
+    vversion  TEXT := CASE WHEN strpos(major_version, '.') > 0
                      THEN major_version
                      ELSE major_version || '.0' END;
     vmajor    INT;

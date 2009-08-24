@@ -1,5 +1,5 @@
 BEGIN;
-SELECT plan( 24 );
+SELECT plan( 43 );
 --SELECT * FROM no_plan();
 
 /****************************************************************************/
@@ -100,6 +100,80 @@ SELECT is(
     '(whatevz:* & yo:*) | hey:*',
     'parse_fti_string() should group quoted strings separate from other terms'
 );
+
+/****************************************************************************/
+-- What does the get_upgrade_warnings() function look like?
+SELECT has_function( 'public', 'get_upgrade_warnings', ARRAY['text', 'integer', 'integer'] );
+SELECT function_lang_is( 'get_upgrade_warnings', 'plpgsql' );
+SELECT function_returns( 'get_upgrade_warnings', 'setof record' );
+SELECT volatility_is( 'get_upgrade_warnings', 'volatile' );
+
+-- Give it a shot.
+SELECT is( COUNT(*), 3::bigint, 'get_upgrade_warnings() should return rows' )
+FROM get_upgrade_warnings('8.0', 2, 8);
+
+SELECT is( COUNT(*), 0::bigint, 'get_upgrade_warnings() should return no rows for reversed minors' )
+FROM get_upgrade_warnings('8.0', 8, 2);
+
+SELECT is( COUNT(*), 0::bigint, 'get_upgrade_warnings() should return no rows for same minors' )
+FROM get_upgrade_warnings('8.0', 8, 8);
+
+PREPARE get_warnings AS SELECT version, warning FROM get_upgrade_warnings($1, $2, $3);
+PREPARE exp_warnings AS SELECT $1 || '.' || $2 || '.' || minor::TEXT, upgrade_warning
+    FROM   versions
+    WHERE  super = $1::int
+      AND  major = $2::int
+      AND  minor > ( $3::int )
+      AND  minor <= ( $4::int )
+      AND  upgrade_warning <> ''
+    ORDER BY super, major, minor;
+
+SELECT results_eq(
+    $$ EXECUTE get_warnings('8.0', 2, 8) $$,
+    $$ EXECUTE exp_warnings(8, 0, 2, 8) $$,
+    'get_upgrade_warnings() should return the proper rows for 8.0'
+);
+
+SELECT results_eq(
+    $$ EXECUTE get_warnings('8.3', 0, 1) $$,
+    $$ EXECUTE exp_warnings(8, 3, 0, 1) $$,
+    'get_upgrade_warnings() should return the proper rows for 8.3'
+);
+
+SELECT results_eq(
+    $$ EXECUTE get_warnings('8', 2, 8) $$,
+    $$ EXECUTE exp_warnings(8, 0, 2, 8) $$,
+    'get_upgrade_warnings() should return the proper rows for 8'
+);
+
+SELECT results_eq(
+    $$ EXECUTE get_warnings('8', 8, 2) $$,
+    $$ EXECUTE exp_warnings(8, 0, 8, 2) $$,
+    'get_upgrade_warnings() should return the proper rows for reversed minors'
+);
+
+/****************************************************************************/
+-- What does the get_fixes() function look like?
+SELECT has_function( 'public', 'get_fixes', ARRAY['text', 'integer', 'integer', 'text'] );
+SELECT function_lang_is( 'get_fixes', 'plpgsql' );
+SELECT function_returns( 'get_fixes', 'setof record' );
+SELECT volatility_is( 'get_fixes', 'volatile' );
+
+-- Give it a shot.
+SELECT is( COUNT(*), 15::bigint, 'get_fixes() should return rows' )
+FROM get_fixes('8.0', 2, 3, '');
+
+SELECT is( COUNT(*), 2::bigint, 'get_fixes() should return 2 rows with FT search' )
+FROM get_fixes('8.0', 2, 3, 'pg_dump');
+
+SELECT is( COUNT(*), 0::bigint, 'get_fixes() should return no rows for reversed minors' )
+FROM get_fixes('8.0', 3, 2, '');
+
+SELECT is( COUNT(*), 0::bigint, 'get_fixes() should return no rows for same minors' )
+FROM get_fixes('8.0', 2, 2, '');
+
+PREPARE have_fixes AS SELECT version, warning FROM get_fixes($1, $2, $3, $4);
+
 
 /****************************************************************************/
 -- Finish up and go home.

@@ -10,39 +10,42 @@ BEGIN;
 
 CREATE FUNCTION get_fixes(
     major_version text,
-    start_minor   text,
-    end_minor     text,
+    start_minor   int,
+    end_minor     int,
     text_search   text,
     OUT version   text,
     OUT warning   text
 ) RETURNS SETOF record LANGUAGE plpgsql AS $$
 DECLARE
+    vversion TEXT := CASE WHEN strpos(major_version, '.') > 0
+                     THEN major_version
+                     ELSE major_version || '.0' END;
     vmajor    INT;
     vsuper    INT;
     ts_string TEXT;
 BEGIN
-    vsuper := substring(major_version from $x$(\d+)\.\d+$x$)::INT;
-    vmajor := substring(major_version from $x$\d+\.(\d+)$x$)::INT;
+    vsuper := substring(vversion from $x$(\d+)\.\d+$x$)::INT;
+    vmajor := substring(vversion from $x$\d+\.(\d+)$x$)::INT;
     ts_string := parse_fti_string(text_search);
 
     IF ts_string <> '' THEN
         RETURN QUERY
-        SELECT major_version || '.' || minor::TEXT, fix_desc
+        SELECT vversion || '.' || minor::TEXT, fix_desc
         FROM   fixes
         WHERE  super = vsuper
           AND  major = vmajor
-          AND  minor > ( start_minor::INT )
-          AND  minor <= ( end_minor::INT )
+          AND  minor > ( start_minor )
+          AND  minor <= ( end_minor )
           AND  fix_tsv @@ to_tsquery(ts_string)
         ORDER BY super, major, minor, fix_desc;      
     ELSE 
         RETURN QUERY
-        SELECT major_version || '.' || minor::TEXT, fix_desc
+        SELECT vversion || '.' || minor::TEXT, fix_desc
         FROM   fixes
         WHERE  super = vsuper
           AND  major = vmajor
-          AND  minor > ( start_minor::INT )
-          AND  minor <= ( end_minor::INT )
+          AND  minor > ( start_minor )
+          AND  minor <= ( end_minor )
         ORDER BY super, major, minor, fix_desc;
     END IF;
 END;
@@ -50,24 +53,27 @@ $$;
 
 CREATE FUNCTION get_upgrade_warnings(
     major_version text,
-    start_minor   text,
-    end_minor     text,
+    start_minor   INT,
+    end_minor     INT,
     OUT version   text,
     OUT warning   text
 ) RETURNS SETOF record LANGUAGE plpgsql AS $$
 DECLARE
-    vmajor INT;
-    vsuper INT;
+    vversion TEXT := CASE WHEN strpos(major_version, '.') > 0
+                     THEN major_version
+                     ELSE major_version || '.0' END;
+    vmajor   INT;
+    vsuper   INT;
 BEGIN
-    vsuper := substring(major_version from $x$(\d+)\.\d+$x$)::INT;
-    vmajor := substring(major_version from $x$\d+\.(\d+)$x$)::INT;
+    vsuper := substring(vversion from $x$(\d+)\.\d+$x$)::INT;
+    vmajor := substring(vversion from $x$\d+\.(\d+)$x$)::INT;
     RETURN QUERY
-    SELECT major_version || '.' || minor::TEXT, upgrade_warning
+    SELECT vversion || '.' || minor::TEXT, upgrade_warning
     FROM   versions
     WHERE  super = vsuper
       AND  major = vmajor
-      AND  minor > ( start_minor::INT )
-      AND  minor <= ( end_minor::INT )
+      AND  minor > ( start_minor )
+      AND  minor <= ( end_minor )
       AND  upgrade_warning <> ''
     ORDER BY super, major, minor;
 END;

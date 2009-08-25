@@ -29,9 +29,12 @@ __PACKAGE__->config->{namespace} = '';
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
     my $dbh = $c->model('DBI')->dbh;
-    $c->stash( title => 'PostgreSQL Version Comparison' );
-    $c->view('TD')->template('index');
-    $c->detach('View::TD');
+    $c->stash( title => 'Welcome' );
+
+    # Either of these will work, but because the template has the same name as
+    # this action, we don't have to.
+    # $c->stash(template => 'index')
+    # $c->view('TD')->render('index');
 }
 
 =head2 default

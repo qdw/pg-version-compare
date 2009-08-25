@@ -10,8 +10,9 @@ my $build = PGX::Build->new(
     configure_requires => { 'Module::Build' => '0.34'  },
     build_requires     => {
         'Module::Build' => '0.34',
-        'Test::More'    => '0.17',
         'TAP::Harness'  => '3.13',
+        'Test::More'    => '0.17',
+        'Test::XML'     => '0.08',
     },
     requires           => {
         'perl'                              => 5.010,
@@ -25,6 +26,7 @@ my $build = PGX::Build->new(
         'Catalyst::View::Template::Declare' => '0.04',
         'DBD::Pg'                           => '2.15.1',
         'Exception::Class::DBI'             => '1.00',
+        'YAML::Syck'                        => '1.07',
       },
 );
 

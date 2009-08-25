@@ -15,15 +15,13 @@ use Catalyst::Runtime 5.80;
 #                 directory
 
 use parent qw/Catalyst/;
-use Catalyst qw(
-    -Debug
-    ConfigLoader
-    Static::Simple
-    StackTrace
+use Catalyst (
+    '-Debug',
+    'ConfigLoader',
+    'Static::Simple',
+    'StackTrace',
+    '-Log=warn,fatal,error',
 );
-
-# Keep the log only as noisy as necessary.
-use Catalyst '-Log=warn,fatal,error';
 
 our $VERSION = '0.01';
 
@@ -36,7 +34,9 @@ our $VERSION = '0.01';
 # with an external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config( name => 'PGX::VersionCompare' );
+__PACKAGE__->config(
+    name => 'PGX::VersionCompare',
+);
 
 # Start the application
 __PACKAGE__->setup();

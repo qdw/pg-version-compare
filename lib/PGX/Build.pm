@@ -110,7 +110,7 @@ sub ACTION_test {
 
     # Tell Catalyst to STFU and use the right config.
     local $ENV{CATALYST_DEBUG}  = 0;
-    local $ENV{VINIFILE_CONFIG} = $self->cx_config;
+    local $ENV{CATALYST_CONFIG} = $self->cx_config;
 
     # Make it so.
     $self->SUPER::ACTION_test(@_);

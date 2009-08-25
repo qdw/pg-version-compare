@@ -7,8 +7,9 @@ use feature ':5.10';
 use parent 'Catalyst::Model::DBI';
 use Exception::Class::DBI;
 
+# All other configuration data in the configuration files.
 __PACKAGE__->config(
-    options       => {
+    options => {
         PrintError  => 0,
         RaiseError  => 0,
         HandleError => Exception::Class::DBI->handler,

@@ -14,9 +14,16 @@ use Catalyst::Runtime 5.80;
 #                 directory
 
 use parent qw/Catalyst/;
-use Catalyst qw/-Debug
-                ConfigLoader
-                Static::Simple/;
+use Catalyst qw(
+    -Debug
+    ConfigLoader
+    Static::Simple
+    StackTrace
+);
+
+# Keep the log only as noisy as necessary.
+use Catalyst '-Log=warn,fatal,error';
+
 our $VERSION = '0.01';
 
 # Configure the application.

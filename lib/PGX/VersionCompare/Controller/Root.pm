@@ -28,9 +28,10 @@ PGX::VersionCompare::Controller::Root - Root Controller for PGX::VersionCompare
 
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
-
-    # Hello World
-    $c->response->body( $c->welcome_message );
+    my $dbh = $c->model('DBI')->dbh;
+    $c->stash( title => 'PostgreSQL Version Comparison' );
+    $c->view('TD')->template('index');
+    $c->detach('View::TD');
 }
 
 =head2 default

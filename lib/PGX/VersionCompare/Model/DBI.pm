@@ -13,27 +13,34 @@ __PACKAGE__->config(
     },
 );
 
-=head1 NAME
+1;
+
+=head1 Name
 
 PGX::VersionCompare::Model::DBI - DBI Model Class
 
-=head1 SYNOPSIS
+=head1 Synopsis
 
 See L<PGX::VersionCompare>
 
-=head1 DESCRIPTION
+=head1 Description
 
 DBI Model Class.
 
-=head1 AUTHOR
+=head1 Authors
 
-David E. Wheeler
+=over
 
-=head1 LICENSE
+=item * Josh Berkus <josh.berkus@pgexperts.com>
 
-This library is free software, you can redistribute it and/or modify
-it under the same terms as Perl itself.
+=item * David E. Wheeler <david.wheeler@pgexperts.com>
+
+=item * Quinn Weaver <quinn.weaver@pgexperts.com>
+
+=back
+
+=head1 Copyright
+
+Copyright (c) 2009 PostgreSQL Experts, Inc. All Rights Reserved.
 
 =cut
-
-1;

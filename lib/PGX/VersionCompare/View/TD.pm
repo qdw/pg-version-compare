@@ -50,7 +50,11 @@ PGX::VersionCompare::View::TD namespace.
 
 =over
 
-=item * David E. Wheeler <david@pgexperts.com>
+=item * Josh Berkus <josh.berkus@pgexperts.com>
+
+=item * David E. Wheeler <david.wheeler@pgexperts.com>
+
+=item * Quinn Weaver <quinn.weaver@pgexperts.com>
 
 =back
 

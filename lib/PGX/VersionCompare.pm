@@ -40,32 +40,36 @@ __PACKAGE__->config( name => 'PGX::VersionCompare' );
 # Start the application
 __PACKAGE__->setup();
 
+1;
 
-=head1 NAME
+=head1 Name
 
 PGX::VersionCompare - Catalyst based application
 
-=head1 SYNOPSIS
+=head1 Synopsis
 
     script/pgx_versioncompare_server.pl
 
-=head1 DESCRIPTION
+=head1 Description
 
-[enter your description here]
+This application allows users to compare changes between releases of
+PostgreSQL in order to lear what fixes were introduced and what upgrade issues
+there might be to go from one version to another.
 
-=head1 SEE ALSO
+=head1 Authors
 
-L<PGX::VersionCompare::Controller::Root>, L<Catalyst>
+=over
 
-=head1 AUTHOR
+=item * Josh Berkus <josh.berkus@pgexperts.com>
 
-David E. Wheeler
+=item * David E. Wheeler <david.wheeler@pgexperts.com>
 
-=head1 LICENSE
+=item * Quinn Weaver <quinn.weaver@pgexperts.com>
 
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
+=back
+
+=head1 Copyright
+
+Copyright (c) 2009 PostgreSQL Experts, Inc. All Rights Reserved.
 
 =cut
-
-1;

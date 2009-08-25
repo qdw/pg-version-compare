@@ -24,6 +24,7 @@ my $build = PGX::Build->new(
         'Catalyst::Plugin::StackTrace'      => '0.10',
         'Catalyst::View::Template::Declare' => '0.04',
         'DBD::Pg'                           => '2.15.1',
+        'Exception::Class::DBI'             => '1.00',
       },
 );
 

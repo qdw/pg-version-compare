@@ -4,23 +4,21 @@ use strict;
 use warnings;
 use parent 'Catalyst::Controller';
 
-#
-# Sets the actions in this controller to be registered with no prefix
-# so they function identically to actions created in MyApp.pm
-#
-__PACKAGE__->config->{namespace} = '';
-
-=head1 NAME
+=head1 Name
 
 PGX::VersionCompare::Controller::Root - Root Controller for PGX::VersionCompare
 
-=head1 DESCRIPTION
+=head1 Description
 
-[enter your description here]
-
-=head1 METHODS
+Root controller for the PGX version comparison application.
 
 =cut
+
+# Sets the actions in this controller to be registered with no prefix so they
+# function identically to actions created in PGX::VersionCompare.
+__PACKAGE__->config->{namespace} = '';
+
+=head1 Methods
 
 =head2 index
 
@@ -52,15 +50,22 @@ Attempt to render a view, if needed.
 
 sub end : ActionClass('RenderView') {}
 
-=head1 AUTHOR
+1;
 
-David E. Wheeler
+=head1 Authors
 
-=head1 LICENSE
+=over
 
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
+=item * Josh Berkus <josh.berkus@pgexperts.com>
+
+=item * David E. Wheeler <david.wheeler@pgexperts.com>
+
+=item * Quinn Weaver <quinn.weaver@pgexperts.com>
+
+=back
+
+=head1 Copyright
+
+Copyright (c) 2009 PostgreSQL Experts, Inc. All Rights Reserved.
 
 =cut
-
-1;

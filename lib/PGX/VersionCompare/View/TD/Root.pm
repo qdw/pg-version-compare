@@ -4,6 +4,20 @@ use strict;
 use warnings;
 use Template::Declare::Tags;
 
+=head1 Name
+
+PGX::VersionCompare::View::TD::Root - Root TD templates
+
+=head1 Description
+
+This module contains the Template::Declare templates used by PGX::VersionCompare.
+
+=head1 Templates
+
+=head2 index
+
+=cut
+
 template index => sub {
     my ($self, $c) = @_;
     html {
@@ -16,19 +30,15 @@ template index => sub {
 
 1;
 
-=head1 Name
-
-PGX::VersionCompare::View::TD::Root - Root TD templates
-
-=head1 Description
-
-This module contains the Template::Declare templates used by PGX::VersionCompare.
-
 =head1 Authors
 
 =over
 
-=item * David E. Wheeler <david@pgexperts.com>
+=item * Josh Berkus <josh.berkus@pgexperts.com>
+
+=item * David E. Wheeler <david.wheeler@pgexperts.com>
+
+=item * Quinn Weaver <quinn.weaver@pgexperts.com>
 
 =back
 
@@ -37,4 +47,3 @@ This module contains the Template::Declare templates used by PGX::VersionCompare
 Copyright (c) 2009 PostgreSQL Experts, Inc. All Rights Reserved.
 
 =cut
-

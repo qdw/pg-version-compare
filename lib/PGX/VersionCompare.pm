@@ -2,6 +2,7 @@ package PGX::VersionCompare;
 
 use strict;
 use warnings;
+use feature ':5.10';
 
 use Catalyst::Runtime 5.80;
 

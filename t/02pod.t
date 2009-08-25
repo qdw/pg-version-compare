@@ -1,6 +1,9 @@
 #!/usr/bin/env perl
+
 use strict;
 use warnings;
+use feature ':5.10';
+
 use Test::More;
 
 eval "use Test::Pod 1.14";

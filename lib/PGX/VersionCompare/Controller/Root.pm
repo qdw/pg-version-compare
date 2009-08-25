@@ -2,6 +2,8 @@ package PGX::VersionCompare::Controller::Root;
 
 use strict;
 use warnings;
+use feature ':5.10';
+
 use parent 'Catalyst::Controller';
 
 =head1 Name

@@ -1,6 +1,9 @@
 package PGX::VersionCompare::View::TD;
+
 use strict;
 use warnings;
+use feature ':5.10';
+
 use parent 'Catalyst::View::Template::Declare';
 
 1;

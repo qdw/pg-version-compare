@@ -1,6 +1,9 @@
 package PGX::VersionCompare::Model::DBI;
 
 use strict;
+use warnings;
+use feature ':5.10';
+
 use parent 'Catalyst::Model::DBI';
 use Exception::Class::DBI;
 

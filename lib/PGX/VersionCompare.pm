@@ -44,9 +44,20 @@ __PACKAGE__->setup();
 
 1;
 
+=begin comment
+
+Fake-out Module::Build. Delete if it ever changes to support =head1 headers
+other than all uppercase.
+
+=head1 NAME
+
+PGX::VersionCompare - PostgreSQL version comparison
+
+=end comment
+
 =head1 Name
 
-PGX::VersionCompare - Catalyst based application
+PGX::VersionCompare - PostgreSQL version comparison
 
 =head1 Synopsis
 

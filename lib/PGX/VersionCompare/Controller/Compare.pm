@@ -22,7 +22,10 @@ __PACKAGE__->config->{namespace} = '';
 
 =head1 Methods
 
-=head2 compare
+=head2 version
+
+Controller to compare two PostgreSQL versions (that is, find the changes
+between them).  Only a stub so far.
 
 =cut
 

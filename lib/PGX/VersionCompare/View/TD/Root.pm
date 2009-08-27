@@ -119,7 +119,7 @@ END_ERR
 
 #=for deletion soon
     wrap {
-        h1 { "Compare $v1 to $v2" };
+        h1 { 'Compare' };
     } $c;
 #=cut
 

@@ -116,6 +116,22 @@ sub ACTION_test {
     $self->SUPER::ACTION_test(@_);
 }
 
+=begin comment
+
+=head3 run_tap_harness
+
+Override to properly `exit 1` on failure, until a new version comes out with
+this patch: L<http://rt.cpan.org/Public/Bug/Display.html?id=49080>
+
+=end comment
+
+=cut
+
+sub run_tap_harness {
+    my $ret = shift->SUPER::run_tap_harness(@_);
+    exit 1 if $ret->{failed};
+    return $ret;
+}
 
 ##############################################################################
 

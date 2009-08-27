@@ -44,9 +44,20 @@ __PACKAGE__->setup();
 
 1;
 
+=begin comment
+
+Fake-out Module::Build. Delete if it ever changes to support =head1 headers
+other than all uppercase.
+
+=head1 NAME
+
+PGX::VersionCompare - PostgreSQL version comparison
+
+=end comment
+
 =head1 Name
 
-PGX::VersionCompare - Catalyst based application
+PGX::VersionCompare - PostgreSQL version comparison
 
 =head1 Synopsis
 
@@ -60,13 +71,28 @@ there might be to go from one version to another.
 
 =head1 Authors
 
+=begin comment
+
+Fake-out Module::Build. Delete if it ever changes to support =head1 headers
+other than all uppercase.
+
+=head1 AUTHOR
+
+=end comment
+
 =over
 
-=item * Josh Berkus <josh.berkus@pgexperts.com>
+=item *
 
-=item * David E. Wheeler <david.wheeler@pgexperts.com>
+Josh Berkus <josh.berkus@pgexperts.com>
 
-=item * Quinn Weaver <quinn.weaver@pgexperts.com>
+=item *
+
+David E. Wheeler <david.wheeler@pgexperts.com>
+
+=item *
+
+Quinn Weaver <quinn.weaver@pgexperts.com>
 
 =back
 

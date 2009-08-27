@@ -119,7 +119,7 @@ END_ERR
 
 #=for deletion soon
     wrap {
-        h1 { 'Compare' };
+        h1 { 'Compare controller' };
     } $c;
 #=cut
 

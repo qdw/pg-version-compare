@@ -28,7 +28,6 @@ my $build = PGX::Build->new(
         'Exception::Class::DBI'             => '1.00',
         'YAML::Syck'                        => '1.07',
         'Test::XML'                         => '0.08',
-        'XML::XPath'                        => '1.13',
       },
 );
 

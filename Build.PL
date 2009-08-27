@@ -26,8 +26,10 @@ my $build = PGX::Build->new(
         'Catalyst::View::Template::Declare' => '0.04',
         'DBD::Pg'                           => '2.15.1',
         'Exception::Class::DBI'             => '1.00',
-        'YAML::Syck'                        => '1.07',
+        'Test::Pod::Coverage'               => '1.08',
         'Test::XML'                         => '0.08',
+        'YAML::Syck'                        => '1.07',
+        'XML::XPath'                        => '1.13',
       },
 );
 

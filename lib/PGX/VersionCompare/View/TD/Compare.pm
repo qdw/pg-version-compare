@@ -8,27 +8,19 @@ use Template::Declare::Tags;
 
 =head1 Name
 
-PGX::VersionCompare::View::TD::Compare - templates for the pages that let you
-compare (changes across) PostgreSQL versions
+PGX::VersionCompare::View::TD::Compare - nothing here right now
 
 =head1 Description
 
-This module contains the Template::Declare templates used by
-PGX::VersionCompare, specifically for the business logic of comparison.
+See package PGX::VersionCompare::View::TD::Root.  That's where templates
+must be defined for now, till someone bothers pulling its wrapper, wrap, into
+a separate module.
 
 =head1 Templates
 
 =head2 compare
 
 =cut
-
-template 'compare/versions' => sub {
-    my ($self, $c) = @_;
-#     wrap {
-#         h1 { 'Compare template' };
-#     } $c;
-    wrap { 'woot!' };
-};
 
 1;
 

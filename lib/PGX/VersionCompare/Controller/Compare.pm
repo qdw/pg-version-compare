@@ -26,24 +26,28 @@ __PACKAGE__->config->{namespace} = '';
 
 =cut
 
-
 # :Regex:  match one version compose of S.M.m (Super.Major.minor) digits,
 # followed by a slash, followed by another version of the same format.
 #
-# Match versions liberally; assume that future major versions of
-# PostgreSQL may have more digits (both before and after the decimal place)
-# than have been seen so far.  After all, if someone enters an invalid
-# version number, the database will catch it.
-sub versions :Regex('c') {
+# Match versions liberally.  So far, major versions (e.g. 8.1, 8.4)
+# have always had one digit before the decimal place and one digit after.
+# However, let's assume a future version might have more than one digit
+# in either place (e.g. 10.1 or 8.11).
+#
+# In any case, if someone enters an invalid version number, the database
+# will catch it.
+#
 #:Regex('^(\d+)[.](\d+)[.](\d+)/(\d+)[.](\d+)[.](\d+)') {
-    my ( $self, $c ) = @_;
+# e.g.      8   .   1   .  10  /  8   .   4   .   1       (minus spaces)
+sub version :Path('/compare') {
+    my ( $self, $c, $v1, $v2 ) = @_;
     my $dbh = $c->model('DBI')->dbh;
     $c->stash(
         title => 'pg-version-compare: Track Changes between PostgreSQL Versions'
     );
 
-    #my ($major_1, $minor_1) = qw(8.1 1)
-
+    $c->stash(v1 => $v1);
+    $c->stash(v2 => $v2);
 }
 
 1;

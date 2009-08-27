@@ -96,6 +96,35 @@ template index => sub {
     } $c;
 };
 
+template version => sub {
+    my ($self, $c) = @_;
+    my $v1 = $c->stash->{v1};
+    my $v2 = $c->stash->{v2};
+
+=for later
+    if (!defined $v1 && !defined $v2) {
+        # No input given.  That means we present the query section only.
+    }
+    elsif (defined $v1 && defined $v2) {
+        # Two versions given.  That means we present the same query section
+        # with those values filled in ("sticky"-style), and then, below it,
+        # show the changes between those versions.
+    }
+    else {
+        $c->error(<<'END_ERR');
+In order to compare versions, you must provide two version numbers.  You provided only one.
+END_ERR
+    }
+=cut
+
+#=for deletion soon
+    wrap {
+        h1 { "Compare $v1 to $v2" };
+    } $c;
+#=cut
+
+};
+
 1;
 
 =head1 Authors

@@ -87,17 +87,12 @@ BEGIN {
 
 =head2 index
 
-  $c->view('TD')->template('index');
-  $c->detach('View::TD');
-
-The root request template.
-
 =cut
 
 template index => sub {
     my ($self, $c) = @_;
     wrap {
-        h1 { 'Welcome!' };
+        h1 { 'Welcome' };
     } $c;
 };
 

@@ -29,28 +29,33 @@ between them).  Only a stub so far.
 
 =cut
 
-# :Regex:  match one version compose of S.M.m (Super.Major.minor) digits,
-# followed by a slash, followed by another version of the same format.
-#
-# Match versions liberally.  So far, major versions (e.g. 8.1, 8.4)
-# have always had one digit before the decimal place and one digit after.
-# However, let's assume a future version might have more than one digit
-# in either place (e.g. 10.1 or 8.11).
-#
-# In any case, if someone enters an invalid version number, the database
-# will catch it.
-#
-#:Regex('^(\d+)[.](\d+)[.](\d+)/(\d+)[.](\d+)[.](\d+)') {
-# e.g.      8   .   1   .  10  /  8   .   4   .   1       (minus spaces)
 sub version :Path('/compare') {
     my ( $self, $c, $v1, $v2 ) = @_;
+    my $search_term = $c->request->param('search_for_substring'); # may be undef
     my $dbh = $c->model('DBI')->dbh;
+    $c->stash(v1 => $v1);
+    $c->stash(v2 => $v2);
+    $c->stash(search_for_substring => $search_term);
+
     $c->stash(
         title => 'pg-version-compare: Track Changes between PostgreSQL Versions'
     );
 
-    $c->stash(v1 => $v1);
-    $c->stash(v2 => $v2);
+    if (!defined $v1 && !defined $v2) {
+        # No input given.  That means we present the query section only.
+        #$c->view('TD')->render('query');
+    }
+    elsif (defined $v1 && defined $v2) {
+        # Two versions given.  That means we present the same query section
+        # with those values filled in ("sticky"-style), and then, below it,
+        # show the changes between those versions.
+        #$c->view('TD')->render('response');
+    }
+    else {
+        $c->error(<<'END_ERR');
+In order to compare versions, you must provide two version numbers.  You provided only one.
+END_ERR
+    }
 }
 
 1;

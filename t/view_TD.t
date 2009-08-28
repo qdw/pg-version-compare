@@ -8,7 +8,7 @@ use utf8;
 use Test::More tests => 5;
 #use Test::More 'no_plan';
 use Test::XML;
-use Test::XML::XPath;
+#use Test::XML::XPath;
 
 BEGIN {
     use_ok 'PGX::VersionCompare';

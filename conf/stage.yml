@@ -1,5 +1,5 @@
 ---
-name: PGVersionCompare
+name: PostgreSQL Experts’ PGVersionCompare (STAGE)
 Model::DBI:
   dsn: dbi:Pg:dbname=version_compare_stage
   user: postgres

@@ -1,5 +1,5 @@
 ---
-name: PGVersionCompare
+name: PostgreSQL Experts’ PGVersionCompare (DEV)
 Model::DBI:
   dsn: dbi:Pg:dbname=version_compare_dev
   user: postgres

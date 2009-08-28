@@ -66,7 +66,7 @@ BEGIN {
                     div {
                         id is 'ftr';
                         span {
-                            outs_raw '&copy; ' . ((localtime(time))[5] + 1900)
+                            '© ' . ((localtime(time))[5] + 1900)
                                    . ' PostgreSQL Experts Inc.';
                         };
                         a { href is '#'; 'Privacy Policy' }

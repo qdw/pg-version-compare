@@ -7,7 +7,7 @@ use warnings;
 use Getopt::Long;
 use Pod::Usage;
 use FindBin;
-use lib "$FindBin::Bin/../lib";
+use lib "$FindBin::Bin/../blib/lib", "$FindBin::Bin/../lib";
 use PGX::VersionCompare;
 
 my $help = 0;

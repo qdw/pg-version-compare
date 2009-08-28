@@ -35,8 +35,9 @@ our $VERSION = '0.01';
 # local deployment.
 
 __PACKAGE__->config(
-    name         => 'PGX::VersionCompare',
-    default_view => 'TD'
+    name                   => 'PGX::VersionCompare',
+    default_view           => 'TD',
+    'Plugin::ConfigLoader' => { file => 'conf/dev.yml' },
 );
 
 # Start the application

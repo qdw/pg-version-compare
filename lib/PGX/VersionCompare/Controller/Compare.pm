@@ -43,18 +43,22 @@ sub version :Path('/compare') {
 
     if (!defined $v1 && !defined $v2) {
         # No input given.  That means we present the query section only.
-        #$c->view('TD')->render('query');
+        $c->stash(template => 'query');
+        return;
     }
     elsif (defined $v1 && defined $v2) {
         # Two versions given.  That means we present the same query section
         # with those values filled in ("sticky"-style), and then, below it,
         # show the changes between those versions.
-        #$c->view('TD')->render('response');
+        $c->stash(template => 'result');
+        return;
     }
     else {
         $c->error(<<'END_ERR');
 In order to compare versions, you must provide two version numbers.  You provided only one.
 END_ERR
+        $c->stash(template => 'query');
+        return;
     }
 }
 

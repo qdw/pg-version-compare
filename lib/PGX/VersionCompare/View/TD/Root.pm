@@ -89,7 +89,8 @@ BEGIN {
     create_wrapper with_query_section => sub {
         my ($code, $c, %p) = @_;
         wrap {
-            h1 { 'Query' }
+            h1 { 'Query' };
+            $code->();
         } $c;
     };
 }
@@ -105,13 +106,22 @@ template index => sub {
     } $c;
 };
 
-template version => sub {
+template query => sub {
     my ($self, $c) = @_;
 
     with_query_section {
-        h1 { 'version' };
+        h2 { 'query' };
     } $c;
 };
+
+template result => sub {
+    my ($self, $c) = @_;
+
+    with_query_section {
+        h2 { 'result' };
+    } $c;
+};
+
 
 1;
 

@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use feature ':5.10';
 
+use Data::Dumper;
+use List::Util qw( first );
 use Template::Declare::Tags;
 
 =head1 Name
@@ -88,8 +90,79 @@ BEGIN {
 BEGIN {
     create_wrapper with_query_section => sub {
         my ($code, $c, %p) = @_;
+
+        # Get sticky values, if form already has been submitted
+        my $major_1 = first {defined $_} $c->{stash}->{major_1}, '';
+        my $major_2 = first {defined $_} $c->{stash}->{major_2}, '';
+        my $minor_1 = first {defined $_} $c->{stash}->{minor_1}, '';
+        my $minor_2 = first {defined $_} $c->{stash}->{minor_2}, '';
+
+        my $known_versions_ref = $c->stash->{known_versions_ref};
+        my @major_versions = sort keys %{ $known_versions_ref };
+        
         wrap {
-            h1 { 'Query' };
+            form {
+                id is 'query';
+                action is '/compare/';
+                
+                p { 'fixes from' };
+                select {
+                    name is 'major_1';
+                    for my $major_version (@major_versions) {
+                        option {
+                            selected is 'selected'
+                                if $major_1 eq $major_version; ## no critic
+                            $major_version;
+                        };
+                    }
+                };
+                select {
+                    name is 'minor_1';
+                    #FIXME:  Replace this incorrect stub with JS that fills out the options dependent on the value of major_1 select!!!!  Use JS.
+                    for my $minor_version (0 .. 21) {
+                        option {
+                            selected is 'selected'
+                                if $minor_1 eq $minor_version; ## no critic
+                            $minor_version;
+                        };
+                    }
+                };
+
+                p{ 'to' };
+                select {
+                    name is 'major_2';
+                    for my $major_version (@major_versions) {
+                        option {
+                            selected is 'selected'
+                                if $major_2 eq $major_version; ## no critic
+                            $major_version;
+                        };
+                    }
+                };
+                select {
+                    name is 'minor_2';
+                    #FIXME:  Replace this incorrect stub with JS that fills out the options dependent on the value of major_2 select!!!!  Use JS.
+                    for my $minor_version (0 .. 21) {
+                        option {
+                            selected is 'selected'
+                                if $minor_2 eq $minor_version; ## no critic
+                            $minor_version;
+                        };
+                    }
+                };
+
+                div {
+                    id is 'search';
+                    p { 'matching' };
+                    input { type is 'text'; name is 'search_expr' };
+                };
+                
+                button {
+                    type is 'submit';
+                    'Show'
+                };
+            };
+
             $code->();
         } $c;
     };
@@ -106,24 +179,39 @@ template index => sub {
     } $c;
 };
 
-template query => sub {
+template version => sub {
     my ($self, $c) = @_;
-
-    with_query_section {
-        h2 { 'query' };
-    } $c;
+    with_query_section {} $c;
 };
 
 template result => sub {
     my ($self, $c) = @_;
-
+    my $fixes_sth = $c->{stash}->{fixes_sth};
+    
     with_query_section {
-        h2 { 'result' };
+        div {
+            id is 'result';
+
+            div {
+                id is 'fixes';
+                p { 'fixes' };
+                table {
+                    class is 'fixes';
+                    while (my ($version, $fix) = $fixes_sth->fetchrow_array()) {
+                        row {
+                            cell {$version}; cell {$fix};
+                        };
+                    }
+                };
+            };
+        };
+
     } $c;
 };
 
-
 1;
+
+__END__
 
 =head1 Authors
 

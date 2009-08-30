@@ -15,6 +15,7 @@ my $build = PGX::Build->new(
         'Test::XML'     => '0.08',
     },
     requires           => {
+        'aliased'                           => '0.30',
         'perl'                              => 5.010,
         'Catalyst::Runtime'                 => '5.80011',
         'Catalyst::Plugin::ConfigLoader'    => '0.27',
@@ -25,7 +26,9 @@ my $build = PGX::Build->new(
         'Catalyst::Plugin::StackTrace'      => '0.10',
         'Catalyst::View::Template::Declare' => '0.04',
         'DBD::Pg'                           => '2.15.1',
+        'Exception::Class'                  => '1.29',
         'Exception::Class::DBI'             => '1.00',
+        'List::Util'                        => '1.21',
         'Test::Pod::Coverage'               => '1.08',
         'Test::XML'                         => '0.08',
         'YAML::Syck'                        => '1.07',

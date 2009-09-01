@@ -5,8 +5,8 @@ use warnings;
 use feature ':5.10';
 use utf8;
 
-#use Test::More tests => 6;
-use Test::More 'no_plan';
+use Test::More tests => 27;
+#use Test::More 'no_plan';
 use Test::More::UTF8;
 use Test::XML;
 use Test::XPath;
@@ -22,6 +22,8 @@ ok $res->is_success, 'Request should have succeeded';
 is_well_formed_xml $res->content, 'The HTML should be well-formed';
 
 my $tx = Test::XPath->new( xml => $res->content, is_html => 1 );
+
+test_basics($tx);
 
 # Call this function for every request to make sure that they all
 # have the same basic structure.

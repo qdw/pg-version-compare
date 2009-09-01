@@ -75,8 +75,9 @@ BEGIN {
                             '© ' . ((localtime(time))[5] + 1900)
                                    . ' PostgreSQL Experts Inc.';
                         };
-                        a { href is '#'; 'Privacy Policy' }
-                        a { href is '#'; 'Terms of Use' }
+                        # XXX Update these URLs when they're finalized
+                        span { a { href is '#'; 'Privacy Policy' } };
+                        span { a { href is '#'; 'Terms of Use'   } };
                         span {
                             a {
                                 href is 'mailto:sales@pgexperts.com';

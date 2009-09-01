@@ -3,6 +3,7 @@ package PGX::VersionCompare::View::TD::Root;
 use strict;
 use warnings;
 use feature ':5.10';
+use utf8;
 
 use Template::Declare::Tags;
 
@@ -38,6 +39,11 @@ BEGIN {
         html {
             attr { xmlns => 'http://www.w3.org/1999/xhtml', 'xml:lang' => 'en' }
             head {
+                meta { attr {
+                    'http-equiv' => 'Content-Type',
+                     content     => 'text/html; charset=UTF-8',
+                }};
+
                 title { $c->config->{name} . ': ' . $c->stash->{title} };
                 link { attr {
                     href => '/ui/css/screen.css',

@@ -3,6 +3,7 @@ package PGX::Build;
 use strict;
 use warnings;
 use feature ':5.10';
+use utf8;
 
 use base 'Module::Build';
 

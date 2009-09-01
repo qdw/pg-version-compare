@@ -3,6 +3,7 @@ package PGX::VersionCompare::Model::DBI;
 use strict;
 use warnings;
 use feature ':5.10';
+use utf8;
 
 use parent 'Catalyst::Model::DBI';
 use Exception::Class::DBI;
@@ -10,10 +11,11 @@ use Exception::Class::DBI;
 # All other configuration data in the configuration files.
 __PACKAGE__->config(
     options => {
-        PrintError  => 0,
-        RaiseError  => 0,
-        HandleError => Exception::Class::DBI->handler,
-        AutoCommit  => 1,
+        PrintError     => 0,
+        RaiseError     => 0,
+        HandleError    => Exception::Class::DBI->handler,
+        AutoCommit     => 1,
+        pg_enable_utf8 => 1,
     },
 );
 

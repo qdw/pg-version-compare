@@ -3,6 +3,7 @@ package PGX::VersionCompare::Controller::Compare;
 use strict;
 use warnings;
 use feature ':5.10';
+use utf8;
 
 use parent 'Catalyst::Controller';
 

@@ -3,6 +3,7 @@ package PGX::VersionCompare;
 use strict;
 use warnings;
 use feature ':5.10';
+use utf8;
 
 use Catalyst::Runtime 5.80;
 
@@ -20,6 +21,7 @@ use Catalyst (
     'ConfigLoader',
     'Static::Simple',
     'StackTrace',
+    'Unicode',
     '-Log=warn,fatal,error',
 );
 
@@ -39,6 +41,9 @@ __PACKAGE__->config(
     default_view           => 'TD',
     'Plugin::ConfigLoader' => { file => 'conf/dev.yml' },
 );
+
+# YAML must load the configuration file with the utf8 flag properly set.
+$YAML::Syck::ImplicitUnicode = 1;
 
 # Start the application
 __PACKAGE__->setup();

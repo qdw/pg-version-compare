@@ -3,6 +3,7 @@ package PGX::VersionCompare::Helpers;
 use warnings;
 use strict;
 use feature ':5.10';
+use utf8;
 
 use Exception::Class(
     'PGX::VersionCompare::MalformedVersion' => {

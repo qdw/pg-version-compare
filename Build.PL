@@ -17,6 +17,7 @@ my $build = PGX::Build->new(
         'Test::XPath'      => '0.10',
     },
     requires           => {
+        'aliased'                           => '0.30',
         'perl'                              => 5.010,
         'Catalyst::Action::RenderView'      => '0.11',
         'Catalyst::Devel'                   => '1.2',
@@ -28,7 +29,9 @@ my $build = PGX::Build->new(
         'Catalyst::Runtime'                 => '5.80011',
         'Catalyst::View::Template::Declare' => '0.04',
         'DBD::Pg'                           => '2.15.1',
+        'Exception::Class'                  => '1.29',
         'Exception::Class::DBI'             => '1.00',
+        'List::Util'                        => '1.21',
         'Test::Pod::Coverage'               => '1.08',
         'Test::XML'                         => '0.08',
         'XML::XPath'                        => '1.13',

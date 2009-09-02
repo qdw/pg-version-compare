@@ -14,7 +14,21 @@ PGX::VersionCompare::View::TD::Root - Root TD templates
 
 =head1 Description
 
-This module contains the Template::Declare templates used by PGX::VersionCompare.
+This module contains the Template::Declare templates used
+by PGX::VersionCompare.  For the programming logic behind them, see
+PGX::VersionCompare::Controller::Root (for the index template) and
+PGX::VersionCompare::Controller::Compare (for all other templates).
+
+In general, the name of the template is the name of the Controller method,
+so a template named index matches sub index.  One exception is
+PGX::VersionCompare::Controller::Compare->compare, which sets the
+template conditionally based on its input parameters:  either
+
+$c->stash(template => 'compare') # If there is no input
+
+or
+
+$c->stash(template => 'compare_result'); # If there is input
 
 =head1 Templates
 
@@ -87,6 +101,26 @@ BEGIN {
     };
 }
 
+=head2 with_query_section
+
+  template foo => sub {
+      my ($self, $c) = @_;
+      with_query_section {
+          div {
+              id is 'stuff_that_goes_below_the_form_element';
+              ...
+          };
+      } $c;
+  };
+
+with_query_section is a template that applies the wrapper 'wrap', then
+adds a query form, with sticky fields, where the user inputs the version
+numbers and (optional) search expression to look for.
+
+with_query_section is used by the 'compare' template and the 'compare_result'
+template to keep those pages DRY.
+
+=cut
 BEGIN {
     create_wrapper with_query_section => sub {
         my ($code, $c, %p) = @_;
@@ -103,7 +137,8 @@ BEGIN {
         wrap {
             form {
                 id is 'query';
-                action is '/compare/';
+                action is '/form_handler';
+                method is 'post';
                 
                 p { 'fixes from' };
                 select {
@@ -116,6 +151,7 @@ BEGIN {
                         };
                     }
                 };
+                span { class is 'dot'; '.'; };
                 select {
                     name is 'minor_1';
                     #FIXME:  Replace this incorrect stub with JS that fills out the options dependent on the value of major_1 select!!!!  Use JS.
@@ -139,6 +175,7 @@ BEGIN {
                         };
                     }
                 };
+                span { class is 'dot'; '.'; };
                 select {
                     name is 'minor_2';
                     #FIXME:  Replace this incorrect stub with JS that fills out the options dependent on the value of major_2 select!!!!  Use JS.
@@ -154,7 +191,7 @@ BEGIN {
                 div {
                     id is 'search';
                     p { 'matching' };
-                    input { type is 'text'; name is 'search_expr' };
+                    input { type is 'text'; name is 'q' };
                 };
                 
                 button {
@@ -170,8 +207,13 @@ BEGIN {
 
 =head2 index
 
-=cut
+Simple test template.  Just shows <h1>Welcome</h1>, wrapped with the PG Experts header and footer.  #FIXME:  Make this template invisible to the user.
 
+For now, that's all.  Maybe someday we will replace this with the code from
+the compare template here, so you can do http://example.com/8.1.1/8.1.2
+rather than http://example.com/compare/8.1.1/8.1.2
+
+=cut
 template index => sub {
     my ($self, $c) = @_;
     wrap {
@@ -179,12 +221,23 @@ template index => sub {
     } $c;
 };
 
-template version => sub {
+=head2 compare
+
+compare - show the search form, without results.
+
+=cut
+template compare => sub {
     my ($self, $c) = @_;
     with_query_section {} $c;
 };
 
-template result => sub {
+=head2 compare_results
+
+compare_results - show the search form, with results unpacked from the
+database (via the $various_sth variables).
+
+=cut
+template compare_result => sub {
     my ($self, $c) = @_;
     my $fixes_sth = $c->{stash}->{fixes_sth};
     
@@ -194,9 +247,10 @@ template result => sub {
 
             div {
                 id is 'fixes';
-                p { 'fixes' };
+                p { 'fixes' }; # FIXME:  If no fixes, say 'no diffs found'
                 table {
                     class is 'fixes';
+                    #FIXME:  When there are 0 results (e.g. when you use a search term that doesn't match anything), you get this:  <table class="fixes">0</table>.  WTF?  Template::Declare quirk?
                     while (my ($version, $fix) = $fixes_sth->fetchrow_array()) {
                         row {
                             cell {$version}; cell {$fix};

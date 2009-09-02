@@ -77,7 +77,7 @@ for fetching.
 =cut
 sub compare :Path('/compare') {
     my ($self, $c, $v1, $v2) = @_;
-    my $search_expr = first {defined $_} $c->req->params->{q}, '';
+    my $search_expr = first {defined $_} $c->req->params->{'q'}, '';
     my $dbh = $c->model('DBI')->dbh;
     $c->stash(dbh => $dbh);
     $c->stash(known_versions_ref => H->get_known_versions_ref($dbh));
@@ -109,7 +109,7 @@ sub compare :Path('/compare') {
 SELECT * FROM get_fixes('$major_1', $minor_1, $minor_2, '$search_expr');
 END_CHANGES
         $fixes_sth->execute();
-        $c->stash->{fixes_sth} = $fixes_sth;        
+        $c->stash->{fixes_sth} = $fixes_sth;
 
         $c->stash(template => 'compare_result');
         return;

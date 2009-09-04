@@ -49,9 +49,7 @@ they come from form submission or from someone entering a URL directly.
 =cut
 sub handle_form :Path('/handle_form') {
     my ($self, $c) = @_;
-    $c->stash(title =>
-        'pg-version-compare: Track Changes between PostgreSQL Versions'
-    );
+    $c->stash(title => 'Compare');
 
     my $v1 = $c->req->params->{'major_1'} . '.' . $c->req->params->{'minor_1'};
     my $v2 = $c->req->params->{'major_1'} . '.' . $c->req->params->{'minor_2'};
@@ -81,9 +79,7 @@ sub compare :Path('/compare') {
     my $dbh = $c->model('DBI')->dbh;
     $c->stash(known_versions_ref => H->get_known_versions_ref($dbh));
 
-    $c->stash(
-        title => 'pg-version-compare: Track Changes between PostgreSQL Versions'
-    );
+    $c->stash(title => 'Compare');
 
     if (!defined $v1 && !defined $v2) {
         # No versions given.  That means we present the query section only.
@@ -108,7 +104,7 @@ sub compare :Path('/compare') {
 SELECT * FROM get_fixes('$major_1', $minor_1, $minor_2, '$q');
 END_CHANGES
         $fixes_sth->execute();
-        $c->stash->{fixes_sth} = $fixes_sth;        
+        $c->stash->{fixes_sth} = $fixes_sth;
 
         $c->stash(template => 'compare_result');
         $c->detach();

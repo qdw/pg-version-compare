@@ -5,7 +5,7 @@ use warnings;
 use feature ':5.10';
 use utf8;
 
-use Test::More tests => 27;
+use Test::More tests => 52;
 #use Test::More 'no_plan';
 use Test::More::UTF8;
 use Test::XML;
@@ -16,19 +16,24 @@ BEGIN {
     use_ok 'Catalyst::Test' => 'PGX::VersionCompare';
 }
 
+# Test the home page.
 ok my $res = request('http://localhost:3000/'), 'Request home page';
 ok $res->is_success, 'Request should have succeeded';
-
 is_well_formed_xml $res->content, 'The HTML should be well-formed';
-
 my $tx = Test::XPath->new( xml => $res->content, is_html => 1 );
+test_basics($tx, 'Welcome');
 
-test_basics($tx);
+# Test /compare
+ok $res = request('http://localhost:3000/compare'), 'Request compare page';
+ok $res->is_success, 'Request should have succeeded';
+is_well_formed_xml $res->content, 'The HTML should be well-formed';
+$tx = Test::XPath->new( xml => $res->content, is_html => 1 );
+test_basics($tx, 'Compare');
 
 # Call this function for every request to make sure that they all
 # have the same basic structure.
 sub test_basics {
-    my $tx = shift;
+    my ($tx, $title) = @_;
 
     # Some basic sanity-checking.
     $tx->is( 'count(/html)',      1, 'Should have 1 html element' );
@@ -44,7 +49,7 @@ sub test_basics {
 
     $tx->is(
         '/html/head/title',
-        'PostgreSQL Experts’ PGVersionCompare (TEST): Welcome',
+        "PostgreSQL Experts’ PGVersionCompare (TEST): $title",
         'Title should be corect'
     );
     $tx->is(

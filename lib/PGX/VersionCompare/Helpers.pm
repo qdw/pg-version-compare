@@ -3,6 +3,7 @@ package PGX::VersionCompare::Helpers;
 use warnings;
 use strict;
 use feature ':5.10';
+use utf8;
 
 use Exception::Class(
     'PGX::VersionCompare::MalformedVersion' => {
@@ -88,18 +89,19 @@ Return a hashref mapping major versions to minor versions, like this:
 }
 
 =cut
+
 sub get_known_versions_ref {
     my ($class, $dbh) = @_;
-    my @major_versions = @{ $dbh->selectcol_arrayref(<<'END_MAJOR_SELECT') };
-SELECT * FROM major_versions();
-END_MAJOR_SELECT
+    my @major_versions = @{ $dbh->selectcol_arrayref(<<'    END_MAJOR_SELECT') };
+        SELECT * FROM major_versions();
+    END_MAJOR_SELECT
 
     my %retval;
     for my $major_version (@major_versions) {
-        my @minor_versions = @{ $dbh->selectcol_arrayref(<<"END_MINOR_SELECT")};
-SELECT * FROM minor_versions('$major_version');
-END_MINOR_SELECT
-         $retval{$major_version} = \@minor_versions;
+        my @minor_versions = @{ $dbh->selectcol_arrayref(<<"        END_MINOR_SELECT")};
+            SELECT * FROM minor_versions('$major_version');
+        END_MINOR_SELECT
+        $retval{$major_version} = \@minor_versions;
     }
 
     return \%retval;

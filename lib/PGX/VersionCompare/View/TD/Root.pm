@@ -141,13 +141,13 @@ BEGIN {
         
         my $known_versions_ref = $c->stash->{known_versions_ref};
         my @major_versions = sort keys %{ $known_versions_ref };
-        
+
         wrap {
             form {
                 id is 'query';
                 action is '/handle_form';
                 method is 'post';
-                
+
                 p { 'Fixes from' };
                 select {
                     name is 'major_1';
@@ -206,7 +206,7 @@ BEGIN {
                         value is $q if $q; ## no critic
                     };
                 };
-                
+
                 button {
                     type is 'submit';
                     'Show'
@@ -253,7 +253,7 @@ database (via the $various_sth variables).
 template compare_result => sub {
     my ($self, $c) = @_;
     my $fixes_sth = $c->{stash}->{fixes_sth};
-    
+
     with_query_section {
         div {
             id is 'result';

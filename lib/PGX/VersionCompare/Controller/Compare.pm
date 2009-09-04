@@ -33,10 +33,10 @@ between them).
 
 =cut
 
-=head2 form_handler
+=head2 handle_form
 
-form_handler - this is the method that the form submits to
-(XHTML:  <form ... action="/form_handler"...>)
+handle_form - this is the method that the form submits to
+(XHTML:  <form ... action="/handle_form"...>)
 
 It takes the major and minor version fields in the form and concatenates them
 to get a URI like /compare/8.0.0/8.1.1 .  It also tacks on the search
@@ -47,7 +47,7 @@ In this way, we get to use the compare subroutine for all requests, whether
 they come from form submission or from someone entering a URL directly.
 
 =cut
-sub form_handler :Path('/form_handler') {
+sub handle_form :Path('/handle_form') {
     my ($self, $c) = @_;
     $c->stash(title =>
         'pg-version-compare: Track Changes between PostgreSQL Versions'
@@ -77,9 +77,8 @@ for fetching.
 =cut
 sub compare :Path('/compare') {
     my ($self, $c, $v1, $v2) = @_;
-    my $search_expr = first {defined $_} $c->req->params->{q}, '';
+    my $q = first {defined $_} $c->req->params->{q}, '';
     my $dbh = $c->model('DBI')->dbh;
-    $c->stash(dbh => $dbh);
     $c->stash(known_versions_ref => H->get_known_versions_ref($dbh));
 
     $c->stash(
@@ -89,12 +88,12 @@ sub compare :Path('/compare') {
     if (!defined $v1 && !defined $v2) {
         # No versions given.  That means we present the query section only.
         $c->stash(template => 'compare');
-        return;
+        $c->detach();
     }
     elsif (defined $v1 && defined $v2) {
         # Parse out major and minor, so we can call the stored procedures;
         # stash     major and minor, so the view can populate sticky form fields
-        $c->stash(search_expr => $search_expr);
+        $c->stash(q => $q);
         my ($major_1, $minor_1) = H->parse_version($v1); # for sticky <select>s
         my ($major_2, $minor_2) = H->parse_version($v2); # for sticky <select>s
         $c->stash(major_1 => $major_1);
@@ -106,19 +105,19 @@ sub compare :Path('/compare') {
         # "sticky" values, and then, below it, show the result of the search.
 
         my $fixes_sth = $dbh->prepare(<<"END_CHANGES");
-SELECT * FROM get_fixes('$major_1', $minor_1, $minor_2, '$search_expr');
+SELECT * FROM get_fixes('$major_1', $minor_1, $minor_2, '$q');
 END_CHANGES
         $fixes_sth->execute();
         $c->stash->{fixes_sth} = $fixes_sth;        
 
         $c->stash(template => 'compare_result');
-        return;
+        $c->detach();
     }
     else {
         $c->error(<<'END_ERR');
 In order to compare versions, you must provide two version numbers.  You provided only one.
 END_ERR
-        return;
+        $c->detach();
     }
 }
 

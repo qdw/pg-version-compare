@@ -34,7 +34,7 @@ sub index :Path :Args(0) {
 
     # Either of these will work, but because the template has the same name as
     # this action, we don't have to.
-    # $c->stash(template => 'index')
+    # $c->stash(template => 'index');
     # $c->view('TD')->render('index');
 }
 
@@ -44,7 +44,7 @@ sub index :Path :Args(0) {
 
 sub default :Path {
     my ( $self, $c ) = @_;
-    $c->response->body( 'Page not found' );
+    $c->response->body( 'Page not found' ); #FIXME: use something more friendly?
     $c->response->status(404);
 }
 

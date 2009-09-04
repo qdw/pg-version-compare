@@ -137,17 +137,18 @@ BEGIN {
         my $major_2 = first {defined $_} $c->{stash}->{major_2}, '';
         my $minor_1 = first {defined $_} $c->{stash}->{minor_1}, '';
         my $minor_2 = first {defined $_} $c->{stash}->{minor_2}, '';
-
+        my $q       = first {defined $_} $c->{stash}->{q}, '';
+        
         my $known_versions_ref = $c->stash->{known_versions_ref};
         my @major_versions = sort keys %{ $known_versions_ref };
         
         wrap {
             form {
                 id is 'query';
-                action is '/form_handler';
+                action is '/handle_form';
                 method is 'post';
                 
-                p { 'fixes from' };
+                p { 'Fixes from' };
                 select {
                     name is 'major_1';
                     for my $major_version (@major_versions) {
@@ -198,7 +199,12 @@ BEGIN {
                 div {
                     id is 'search';
                     p { 'matching' };
-                    input { type is 'text'; name is 'q' };
+                    #FIXME:  Put a little link to some copy that explains the query syntax
+                    input {
+                        type is 'text';
+                        name is 'q';
+                        value is $q if $q; ## no critic
+                    };
                 };
                 
                 button {
@@ -254,14 +260,13 @@ template compare_result => sub {
 
             div {
                 id is 'fixes';
-                p { 'fixes' }; # FIXME:  If no fixes, say 'no diffs found'
+                # FIXME:  If no fixes, say 'no diffs found'
                 table {
                     class is 'fixes';
                     #FIXME:  When there are 0 results (e.g. when you use a search term that doesn't match anything), you get this:  <table class="fixes">0</table>.  WTF?  Template::Declare quirk?
+                    row { th {'Fix'}; th {'Introduced in';}; };
                     while (my ($version, $fix) = $fixes_sth->fetchrow_array()) {
-                        row {
-                            cell {$version}; cell {$fix};
-                        };
+                        row { cell {$fix}; cell {$version}; };
                     }
                 };
             };

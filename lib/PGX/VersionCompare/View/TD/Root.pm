@@ -142,7 +142,18 @@ BEGIN {
         my $known_versions_ref = $c->stash->{known_versions_ref};
         my @major_versions = sort keys %{ $known_versions_ref };
 
+        sub dot {
+            return span { class is 'dot'; '.'; };
+        };
+
         wrap {
+            if (exists $c->{stash}->{error}) {
+                p {
+                    id is 'error';
+                    $c->{stash}->{error};
+                };
+            };
+            
             form {
                 id is 'query';
                 action is '/handle_form';
@@ -159,7 +170,7 @@ BEGIN {
                         };
                     }
                 };
-                span { class is 'dot'; '.'; };
+                dot();
                 select {
                     name is 'minor_1';
                     #FIXME:  Replace this incorrect stub with JS that fills out the options dependent on the value of major_1 select!!!!  Use JS.
@@ -183,10 +194,10 @@ BEGIN {
                         };
                     }
                 };
-                span { class is 'dot'; '.'; };
+                dot();
                 select {
                     name is 'minor_2';
-                    #FIXME:  Replace this incorrect stub with JS that fills out the options dependent on the value of major_2 select!!!!  Use JS.
+                    #FIXME:  Replace this incorrect stub with JS that fills out the options dependent on the value of major_2 select!!!!
                     for my $minor_version (0 .. 21) {
                         option {
                             selected is 'selected'
@@ -197,7 +208,7 @@ BEGIN {
                 };
 
                 div {
-                    id is 'search';
+                    id is 'q';
                     p { 'matching' };
                     #FIXME:  Put a little link to some copy that explains the query syntax
                     input {
@@ -212,7 +223,7 @@ BEGIN {
                     'Show'
                 };
             };
-
+            
             $code->();
         } $c;
     };

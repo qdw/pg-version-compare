@@ -7,7 +7,7 @@ use feature 'say';
 use Catalyst::Test 'PGX::VersionCompare';
 use Data::Dumper;
 use Test::Exception;
-use Test::More tests => 23;
+use Test::More tests => 26;
 
 sub stash_var_ok {
     my ($c, $stash_var_name, $expected_type, $expected_value) = @_;
@@ -37,14 +37,18 @@ sub stash_var_ok {
     }
 }
 
+sub init_test_for_uri {
+    my ($uri) = @_;
+    say "************* testing $uri";
+    return ctx_request($uri);
+}
+
 ################################################################################
 # Test the index page
 #     URI /
 #     action PGX::VersionCompare::Controller::Root->index
 {
-    my $uri = '/';
-    say "############# testing $uri";
-    my ($res, $c) = ctx_request($uri);
+    my ($res, $c) = init_test_for_uri('/');
     is($c->stash->{title}, 'Welcome', 'title set properly');
 }
 
@@ -53,9 +57,7 @@ sub stash_var_ok {
 #     URI /compare/8.0.0/8.0.3/?q=Avoid
 #     action PGX::VersionCompare::Controller::Compare->compare
 {
-    my $uri = '/compare/8.0.0/8.0.3/?q=Avoid';
-    say "############# testing $uri";
-    my ($res, $c) = ctx_request($uri);
+    my ($res, $c) = init_test_for_uri('/compare/8.0.0/8.0.3/?q=Avoid');
 
     my $expected = {
         '8.3' => [
@@ -149,9 +151,7 @@ sub stash_var_ok {
 #     URI /compare
 #     action PGX::VersionCompare::Controller::Compare->compare
 {
-    my $uri = '/compare';
-    say "############# testing $uri";
-    my ($res, $c) = ctx_request($uri);
+    my ($res, $c) = init_test_for_uri('/compare');
 
     is(
         $c->stash->{template},
@@ -161,4 +161,22 @@ sub stash_var_ok {
     
      map { ok(!exists $c->stash->{$_}, "no $_ in stash") }
          qw( major_1 major_2 minor_1 minor_2 q fixes_sth);
+}
+
+################################################################################
+# Test the compare page's behavior when only one version number is passed
+# (should yield an error message)
+#     URI /compare/8.0.0
+#     action PGX::VersionCompare::Controller::Compare->compare
+{
+
+    my ($res, $c) = init_test_for_uri('/compare/8.0.0');
+
+    is(
+        $c->stash->{template},
+        'compare',
+        q(no input, so template is just 'compare', not 'compare_result')
+    );
+
+    stash_var_ok($c, 'error', 'SCALAR', 'In order to compare versions, you must provide two version numbers.  You provided only one.');
 }

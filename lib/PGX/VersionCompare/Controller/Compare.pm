@@ -100,9 +100,9 @@ sub compare :Path('/compare') {
         # Two versions given.  That means we present the same form with
         # "sticky" values, and then, below it, show the result of the search.
 
-        my $fixes_sth = $dbh->prepare(<<"END_CHANGES");
+        my $fixes_sth = $dbh->prepare(<<"END_FIXES");
 SELECT * FROM get_fixes('$major_1', $minor_1, $minor_2, '$q');
-END_CHANGES
+END_FIXES
         $fixes_sth->execute();
         $c->stash->{fixes_sth} = $fixes_sth;
 
@@ -110,13 +110,11 @@ END_CHANGES
         $c->detach();
     }
     else {
-        $c->error(<<'END_ERR');
-In order to compare versions, you must provide two version numbers.  You provided only one.
-END_ERR
+        $c->stash(template => 'compare');
+        $c->stash(error => 'In order to compare versions, you must provide two version numbers.  You provided only one.');
         $c->detach();
     }
 }
-
 
 1;
 

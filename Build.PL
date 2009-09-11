@@ -32,9 +32,6 @@ my $build = PGX::Build->new(
         'Exception::Class'                  => '1.29',
         'Exception::Class::DBI'             => '1.00',
         'List::Util'                        => '1.21',
-        'Test::Pod::Coverage'               => '1.08',
-        'Test::XML'                         => '0.08',
-        'XML::XPath'                        => '1.13',
         'YAML::Syck'                        => '1.07',
       },
 );

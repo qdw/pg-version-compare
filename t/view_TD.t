@@ -130,31 +130,41 @@ sub test_sanity {
 {
     my $tx = test_sanity('http://localhost:3000/compare', 'Compare');
 
-    my $form = q(//form[@id='query']);
-    $tx->is("count($form)", 1, q(only 1 form with id 'query'));
-    $tx->is("$form/p[1]", 'Fixes from', q('Fixes from' paragraph));
-    $tx->is("$form/p[2]", 'to',         q('to' paragraph));
-    $tx->is("count($form/select)", 4, '4 select boxes:');
-    $tx->is("$form/select[1]/\@name", 'major_1', '1st has id major_1');
-    $tx->is("$form/select[2]/\@name", 'minor_1', '2nd has id minor_1');
-    $tx->is("$form/select[3]/\@name", 'major_2', '3rd has id major_2');
-    $tx->is("$form/select[4]/\@name", 'minor_2', '4th has id minor_2');
-    $tx->ok("$form/select/option", 'select boxes are populated with options');
-    $tx->is(
-        "count($form/span[\@class='dot'])",
-        2,
-        '2 spans for the dots between version numbers'
-    );
+    # Hmn, can't do //form[@id="query" AND @action="/handle_form]
+    # --guess this module's XPath support is incomplete?
+    $tx->ok('//form[@action="/handle_form"]', 'form action is /handle_form');
+    $tx->ok('//form[@id="query"]', sub {
 
-    my $q = $form . q{/div[@id='q']};
-    $tx->is("count($q)", 1, 'form has 1 div with id q (for the search expr)');
-    $tx->is("$q/p", 'matching', q('matching' paragraph));
+        $_->is('count(.)',    1,   q(only 1 form with id 'query')  );
+        $_->is('count(./*)',  10,  'form has 10 sub-elements'      );
 
-    my $textbox = "$q/input[\@type='text']";
-    $tx->is("count($textbox)", 1, '1 textbox (for the search expr)');
-    $tx->ok($textbox . q{[@name='q']}, q(textbox has name="q"));
+        $_->is('./p[1]', 'Fixes from', q('Fixes from' paragraph));
+        $_->is('./p[2]', 'to',         q('to' paragraph));
 
-    my $submit = "$form/button[\@type='submit']";
-    $tx->is("count($submit)", 1, '1 submit button');
-    $tx->is($submit, 'Show', q(submit button is named 'Show'));
+        $_->is('count(./select)', 4, '4 select boxes:');
+        $_->is('./select[1]/@name', 'major_1', 'box 1 has name major_1');
+        $_->is('./select[2]/@name', 'minor_1', 'box 2 has name minor_1');
+        $_->is('./select[3]/@name', 'major_2', 'box 3 has name major_2');
+        $_->is('./select[4]/@name', 'minor_2', 'box 4 has name minor_2');
+        for my $i (1 .. 4) {
+            $_->ok("./select[$i]/option", "box $i is populated with option(s)");
+        }
+
+        $_->is(
+            'count(./span[@class="dot"])',
+            2,
+            '2 spans (somewhere) for the dots between version numbers'
+        );
+
+        $_->ok('./div[@id="q"]', sub {
+            $_->is('./p', 'matching', q('matching' paragraph));
+            $->ok('./input[@type="text"]', 'textbox');
+            $_->ok('./input[@name="q"]',
+                q[input with name 'q' (for the search expression)]
+            );
+        }, q[form contains div with id 'q' (for the search expression, etc.)]);
+
+        $_->is('./button[@type="submit"]', 'Show', 'submit button reads Show');
+
+    }, 'form');
 }

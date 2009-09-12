@@ -142,6 +142,12 @@ BEGIN {
         my $known_versions_ref = $c->stash->{known_versions_ref};
         my @major_versions = sort keys %{ $known_versions_ref };
 
+=head2 dot
+
+This helper subroutine generates the XML for the dot between version
+numbers.  Why repeat yourself, eh?
+
+=cut
         sub dot {
             return span { class is 'dot'; '.'; };
         };

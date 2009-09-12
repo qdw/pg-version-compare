@@ -7,7 +7,7 @@ use utf8;
 
 use Carp;
 
-use Test::More tests => 68;
+use Test::More tests => 73;
 #use Test::More 'no_plan';
 use Test::More::UTF8;
 use Test::XML;
@@ -158,7 +158,7 @@ sub test_sanity {
 
         $_->ok('./div[@id="q"]', sub {
             $_->is('./p', 'matching', q('matching' paragraph));
-            $->ok('./input[@type="text"]', 'textbox');
+            $_->ok('./input[@type="text"]', 'textbox');
             $_->ok('./input[@name="q"]',
                 q[input with name 'q' (for the search expression)]
             );

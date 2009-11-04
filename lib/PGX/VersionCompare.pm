@@ -51,7 +51,7 @@ has conn => (is => 'ro', default => sub {
 
 __PACKAGE__->config(
     name                   => 'PGX::VersionCompare',
-    default_view           => 'TD',
+    default_view           => 'HTML',
     'Plugin::ConfigLoader' => { file => 'conf/dev.yml' },
 );
 

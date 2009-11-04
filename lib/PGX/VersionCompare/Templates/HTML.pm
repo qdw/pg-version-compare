@@ -1,17 +1,18 @@
-package PGX::VersionCompare::View::TD::Root;
+package PGX::VersionCompare::Templates::HTML;
 
 use strict;
 use warnings;
 use feature ':5.10';
 use utf8;
+use parent 'Template::Declare::Catalyst';
 
-use Data::Dumper;
 use List::Util qw( first );
 use Template::Declare::Tags;
+#use Sub::Exporter -setup => { exports => [qw(wrap) ] };
 
 =head1 Name
 
-PGX::VersionCompare::View::TD::Root - Root TD templates
+PGX::VersionCompare::Templates::HTML - HTML templates for PGX::VersionCompare
 
 =head1 Description
 
@@ -138,7 +139,7 @@ BEGIN {
         my $minor_1 = first {defined $_} $c->{stash}->{minor_1}, '';
         my $minor_2 = first {defined $_} $c->{stash}->{minor_2}, '';
         my $q       = first {defined $_} $c->{stash}->{q}, '';
-        
+
         my $known_versions_ref = $c->stash->{known_versions_ref};
         my @major_versions = sort keys %{ $known_versions_ref };
 
@@ -228,10 +229,10 @@ rather than http://example.com/compare/8.1.1/8.1.2
 
 =cut
 template index => sub {
-    my ($self, $c) = @_;
+    my $self = shift;
     wrap {
         h1 { 'Welcome' };
-    } $c;
+    } $self->c;
 };
 
 =head2 compare
@@ -240,8 +241,8 @@ compare - show the search form, without results.
 
 =cut
 template compare => sub {
-    my ($self, $c) = @_;
-    with_query_section {} $c;
+    my $self = shift;
+    with_query_section {} $self->c;
 };
 
 =head2 compare_results
@@ -251,8 +252,8 @@ database (via the $various_sth variables).
 
 =cut
 template compare_result => sub {
-    my ($self, $c) = @_;
-    my $fixes_sth = $c->{stash}->{fixes_sth};
+    my ($self, $args) = @_;
+    my $fixes_sth = $args->{fixes_sth};
 
     with_query_section {
         div {
@@ -272,7 +273,7 @@ template compare_result => sub {
             };
         };
 
-    } $c;
+    } $self->c;
 };
 
 1;

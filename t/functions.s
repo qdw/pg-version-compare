@@ -21,7 +21,7 @@ SELECT results_eq( 'have', 'want', 'major_versions() should return expected quer
 
 -- Make sure that we actually *have* data.
 DEALLOCATE want;
-PREPARE want AS VALUES ('8.0'), ('8.1'), ('8.2'), ('8.3'), ('8.4');
+PREPARE want AS VALUES ('8.0'), ('8.1'), ('8.2'), ('8.3'), ('8.4'), ('8.5');
 
 SELECT results_eq( 'have', 'want', 'major_versions() should return actual values' );
 
@@ -29,25 +29,25 @@ SELECT results_eq( 'have', 'want', 'major_versions() should return actual values
 -- What does the minor_versions() function look like?
 SELECT has_function( 'public', 'minor_versions', ARRAY['text'] );
 SELECT function_lang_is( 'minor_versions', 'sql' );
-SELECT function_returns( 'minor_versions', 'setof int4' );
+SELECT function_returns( 'minor_versions', 'setof integer' );
 SELECT volatility_is( 'minor_versions', 'stable' );
 
 -- Give it a shot.
 SELECT is(
     ARRAY( SELECT * FROM minor_versions('8.3') ),
-    ARRAY[ 0, 1, 2, 3, 4, 5, 6, 7 ],
+    ARRAY[ 0, 1, 2, 3, 4, 5, 6, 7, 8 ],
     'Should get proper minor versions for "8.3"'
 );
 
 SELECT is(
     ARRAY( SELECT * FROM minor_versions('8.2') ),
-    ARRAY[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ],
+    ARRAY[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
     'Should get proper minor versions for "8.2"'
 );
 
 SELECT is(
     ARRAY( SELECT * FROM minor_versions('8.4') ),
-    ARRAY[ 0 ],
+    ARRAY[ 0, 1 ],
     'Should get proper minor versions for "8.4"'
 );
 

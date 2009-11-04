@@ -5,21 +5,17 @@ use warnings;
 use feature ':5.10';
 use utf8;
 
-use Test::More tests => 13;
+use Test::More tests => 11;
 #use Test::More 'no_plan';
 
 BEGIN {
     use_ok 'PGX::VersionCompare';
-    use_ok 'PGX::VersionCompare::Model::DBI';
 }
 
-ok my $dbi = PGX::VersionCompare->model('DBI'), 'Get model';
-isa_ok $dbi, 'PGX::VersionCompare::Model::DBI';
-isa_ok $dbi, 'Catalyst::Model::DBI';
-
-# Make sure we can connect.
-ok $dbi->connect, 'Connect';
-isa_ok my $dbh = $dbi->dbh, 'DBI::db', 'Should be able to get a dbh';
+ok my $conn = PGX::VersionCompare->new->conn, 'Get connection';
+isa_ok $conn, 'DBIx::Connector';
+ok my $dbh = $conn->dbh, 'Make sure we can connect';
+isa_ok $dbh, 'DBI::db', 'The handle';
 
 # What are we connected to, and how?
 is $dbh->{Username}, 'postgres', 'Should be connected as "postgres"';

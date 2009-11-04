@@ -40,7 +40,7 @@ COPY versions (super, major, minor, upgrade_warning) FROM stdin;
 8	3	5	A dump/restore is not required for those running 8.3.X. However, if you are upgrading from a version earlier than 8.3.1, see the release notes for 8.3.1. Also, if you were running a previous 8.3.X release, it is recommended to REINDEX all GiST indexes after the upgrade.
 8	3	1	A dump/restore is not required for those running 8.3.X. However, you might need to REINDEX indexes on textual columns after updating, if you are affected by the Windows locale issue described below.
 8	4	1	A dump/restore is not required for those running 8.4.X.
-8	5	0	\N
+8	5	0	
 8	0	19	
 8	0	18	
 8	0	17	

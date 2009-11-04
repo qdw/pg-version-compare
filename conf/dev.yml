@@ -1,6 +1,6 @@
 ---
 name: PostgreSQL Experts’ PGVersionCompare (DEV)
-Model::DBI:
+dbi:
   dsn: dbi:Pg:dbname=version_compare_dev
   user: postgres
-  password: ''
+  pass: ''

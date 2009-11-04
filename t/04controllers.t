@@ -43,7 +43,7 @@ sub stash_var_ok {
 #     action PGX::VersionCompare::Controller::Root->index
 {
     my $uri = '/';
-    say "############# testing $uri";
+    diag "testing $uri" if 0;
     my ($res, $c) = ctx_request($uri);
     is($c->stash->{title}, 'Welcome', 'title set properly');
 }
@@ -54,7 +54,7 @@ sub stash_var_ok {
 #     action PGX::VersionCompare::Controller::Compare->compare
 {
     my $uri = '/compare/8.0.0/8.0.3/?q=Avoid';
-    say "############# testing $uri";
+    diag "testing $uri" if 0;
     my ($res, $c) = ctx_request($uri);
 
     my $expected = {
@@ -66,7 +66,8 @@ sub stash_var_ok {
             4,
             5,
             6,
-            7
+            7,
+            8,
         ],
         '8.2' => [
             0,
@@ -82,7 +83,8 @@ sub stash_var_ok {
             10,
             11,
             12,
-            13
+            13,
+            14,
         ],
         '8.0' => [
             0,
@@ -106,7 +108,8 @@ sub stash_var_ok {
             18,
             19,
             20,
-            21
+            21,
+            22,
         ],
         '8.1' => [
             0,
@@ -126,9 +129,14 @@ sub stash_var_ok {
             14,
             15,
             16,
-            17
+            17,
+            18,
         ],
         '8.4' => [
+            0,
+            1,
+        ],
+        '8.5' => [
             0
         ]
     };
@@ -150,7 +158,7 @@ sub stash_var_ok {
 #     action PGX::VersionCompare::Controller::Compare->compare
 {
     my $uri = '/compare';
-    say "############# testing $uri";
+    diag "testing $uri" if 0;
     my ($res, $c) = ctx_request($uri);
 
     is(

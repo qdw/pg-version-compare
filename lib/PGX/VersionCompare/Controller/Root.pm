@@ -29,7 +29,7 @@ __PACKAGE__->config->{namespace} = '';
 
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
-    my $dbh = $c->model('DBI')->dbh;
+    my $conn = $c->conn;
     $c->stash( title => 'Welcome' );
 
     # Either of these will work, but because the template has the same name as

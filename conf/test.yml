@@ -1,6 +1,6 @@
 ---
 name: PostgreSQL Experts’ PGVersionCompare (TEST)
-Model::DBI:
+dbi:
   dsn: dbi:Pg:dbname=version_compare_test
   user: postgres
-  password: ''
+  pass: ''

@@ -6,6 +6,9 @@ use feature ':5.10';
 use utf8;
 
 use Catalyst::Runtime 5.80;
+use Moose;
+use DBIx::Connector;
+use Exception::Class::DBI;
 
 # Set flags and add plugins for the application
 #
@@ -26,6 +29,16 @@ use Catalyst (
 );
 
 our $VERSION = '0.01';
+
+has conn => (is => 'ro', default => sub {
+    DBIx::Connector->new( @{ shift->config->{dbi} }{qw(dsn user pass)}, {
+        PrintError     => 0,
+        RaiseError     => 0,
+        HandleError    => Exception::Class::DBI->handler,
+        AutoCommit     => 1,
+        pg_enable_utf8 => 1,
+    });
+});
 
 # Configure the application.
 #

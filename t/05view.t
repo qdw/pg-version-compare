@@ -126,9 +126,8 @@ sub test_sanity {
     my $tx = test_sanity('http://localhost:3000/', 'Welcome');
 }
 
-# Test /compare (no params)
-{
-    my $tx = test_sanity('http://localhost:3000/compare', 'Compare');
+sub test_basics_of_compare {
+    my ($tx) = @_;
 
     # Hmn, can't do //form[@id="query" AND @action="/handle_form]
     # --guess this module's XPath support is incomplete?
@@ -168,3 +167,90 @@ sub test_sanity {
 
     }, 'form');
 }
+
+# Test the compare page (with no params passed)
+{
+    my $tx = test_sanity('http://localhost:3000/compare', 'Compare');
+    test_basics_of_compare($tx);
+}
+
+# Test the compare page (via parameters in a URI)
+{
+    my $tx = test_sanity(
+        'http://localhost:3000/compare/8.0.0/8.0.3/?q=Avoid',
+        'Compare'
+    );
+    test_basics_of_compare($tx);
+    $tx->ok( '//div[@id="result"]', sub {
+        $_->ok('./div[@id="fixes"]', sub {
+            $_->ok('./table[@class="fixes"]', sub {
+                $_->is('./tr[1]/th[1]', 'Fix', 'th 1: Fix');
+                $_->is('./tr[1]/th[2]', 'Introduced in', 'th 2: Introduced in');
+                $_->is('count(.//td)', 8, '8 tds (== 4 rows)');
+
+                $_->is(
+                    './tr[2]/td[1]',
+                    'Avoid SHGetSpecialFolderPath() on Windows',
+                    q(row 1: 'Fix' content is ok)
+                );
+                $_->is(
+                    './tr[2]/td[2]',
+                    '8.0.1',
+                    q(row 1: 'Introduced in' content is ok)
+                );
+
+                $_->is(
+                    './tr[3]/td[1]',
+                    'Avoid buffer overrun when plpgsql cursor declaration has too', #FIXME:  Looks truncated.  This is how it appears in the database, but is it right--that is, is it really what appeared in the CHANGELOG?
+                    q(row 2: 'Fix' content is ok)
+                );
+                $_->is(
+                    './tr[3]/td[2]',
+                    '8.0.1',
+                    q(row 2: 'Introduced in' content is ok)
+                );
+
+                $_->is(
+                    './tr[4]/td[1]',
+                    'New cache management algorithm 2Q replaces ARC (Tom) This was done to avoid a pending US patent on ARC . The 2Q code might be a few percentage points slower than ARC for some work loads. A better cache management algorithm will appear in 8.1.',
+                    q(row 3: 'Fix' content is ok)
+                );
+                $_->is(
+                    './tr[4]/td[2]',
+                    '8.0.2',
+                    q(row 3: 'Introduced in' content is ok)
+                );
+
+                $_->is(
+                    './tr[5]/td[1]',
+                    'Change contrib/tsearch2 to avoid unsafe use of', #FIXME:  Looks truncated (looks the same in the database)
+                    q(row 4: 'Fix' content is ok)
+                );
+                $_->is(
+                    './tr[5]/td[2]',
+                    '8.0.3',
+                    q(row 4: 'Introduced in' content is ok)
+                );
+            }, 'fixes table:');
+        }, 'found "fixes" div:');
+    }, '************* Finished basic compare test; found "result" div');
+
+    $_->ok(0, 'test stickiness of form fields');
+}
+
+# Test the compare page's behavior when only one version number is passed
+# (should yield an error message)
+{
+    my $tx = test_sanity(
+        'http://localhost:3000/compare/8.0.0',
+        'Compare'
+    );
+    test_basics_of_compare($tx);
+    $tx->is(
+        '//p[@id="error"]',
+        'In order to compare versions, you must provide two version numbers.  You provided only one.',
+        'pass only one version, get the expected error message'
+    );
+}
+
+# ok(0, 'need to write view and controller tests for the two-param (no search) case');

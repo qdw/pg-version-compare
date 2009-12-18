@@ -104,7 +104,7 @@ sub ACTION_test {
 
     # Set things up for pgTAP tests.
     my $config = $self->read_cx_config;
-    my ( $db, $cmd ) = $self->db_cmd( $config->{'Model::DBI'} );
+    my ( $db, $cmd ) = $self->db_cmd( $config->{dbi} );
     push @{ $cmd }, '--dbname' => $db;
     $self->psql_test( $cmd );
     local $ENV{PGOPTIONS} = '--search_path=tap,public';
@@ -227,7 +227,7 @@ sub ACTION_db {
     # Get the database configuration information.
     my $config = $self->read_cx_config;
 
-    my ( $db, $cmd ) = $self->db_cmd( $config->{'Model::DBI'} );
+    my ( $db, $cmd ) = $self->db_cmd( $config->{dbi} );
 
     # Does the database exist?
     my $db_exists = $self->drop_db ? 1 : $self->_probe(

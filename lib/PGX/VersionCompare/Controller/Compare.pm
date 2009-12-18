@@ -66,8 +66,8 @@ sub handle_form :Path('/handle_form') {
 
 If no input was given, just show the query form (template 'compare').
 
-If input was given, show that same form with sticky values, plus the results
-of the query (template 'compare_results').  Query results are passed between
+If input was given, show that same form with sticky values, plus the result
+of the query (template 'compare_result').  The query result is passed between
 this controller action and the view template via sth's in the stash.  This
 method prepares and executes the query, and returns the sth's ready
 for fetching.
@@ -75,16 +75,18 @@ for fetching.
 =cut
 sub compare :Path('/compare') {
     my ($self, $c, $v1, $v2) = @_;
-    my $q = first {defined $_} $c->req->params->{q}, '';
-    my $dbh = $c->model('DBI')->dbh;
-    $c->stash(known_versions_ref => H->get_known_versions_ref($dbh));
+    my $q = first {defined $_} $c->req->params->{'q'}, '';
+    my $conn = $c->conn;
+    $c->stash(known_versions_ref => $conn->run(fixup => sub {
+        H->get_known_versions_ref($conn);
+    }));
 
     $c->stash(title => 'Compare');
 
     if (!defined $v1 && !defined $v2) {
         # No versions given.  That means we present the query section only.
-        $c->stash(template => 'compare');
-        $c->detach();
+        #$c->view('TD')->template('compare'); #FIXME: remove.
+        $c->stash('template', 'compare');
     }
     elsif (defined $v1 && defined $v2) {
         # Parse out major and minor, so we can call the stored procedures;
@@ -99,20 +101,21 @@ sub compare :Path('/compare') {
 
         # Two versions given.  That means we present the same form with
         # "sticky" values, and then, below it, show the result of the search.
-
-        my $fixes_sth = $dbh->prepare(<<"END_FIXES");
-SELECT * FROM get_fixes('$major_1', $minor_1, $minor_2, '$q');
-END_FIXES
-        $fixes_sth->execute();
-        $c->stash->{fixes_sth} = $fixes_sth;
-
-        $c->stash(template => 'compare_result');
-        $c->detach();
+        $c->stash->{fixes_sth} = $conn->run(fixup => sub {
+            my $sth = shift->prepare(q{SELECT * FROM get_fixes(?, ?, ?, ?)});
+            $sth->execute( $major_1, $minor_1, $minor_2, $q);
+            $sth;
+        });
+        
+        #$c->view('TD')->template('compare_result'); #FIXME:  remove
+        $c->stash('template', 'compare_result');
     }
     else {
-        $c->stash(template => 'compare');
-        $c->stash(error => 'In order to compare versions, you must provide two version numbers.  You provided only one.');
-        $c->detach();
+        $c->stash(error =>
+            'In order to compare versions, you must provide two version'
+            . ' numbers.  You provided only one.'
+        );
+        $c->stash('template', 'compare');
     }
 }
 

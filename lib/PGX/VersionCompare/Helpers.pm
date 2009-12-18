@@ -91,7 +91,9 @@ Return a hashref mapping major versions to minor versions, like this:
 =cut
 
 sub get_known_versions_ref {
-    my ($class, $dbh) = @_;
+    my ($class, $conn) = @_;
+
+    my $dbh = $conn->dbh();
     my @major_versions = @{ $dbh->selectcol_arrayref(<<'    END_MAJOR_SELECT') };
         SELECT * FROM major_versions();
     END_MAJOR_SELECT

@@ -1,6 +1,6 @@
 ---
 name: PostgreSQL Experts’ PGVersionCompare (STAGE)
-Model::DBI:
+dbi:
   dsn: dbi:Pg:dbname=version_compare_stage
   user: postgres
-  password: ''
+  pass: ''

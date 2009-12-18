@@ -37,18 +37,14 @@ sub stash_var_ok {
     }
 }
 
-sub init_test_for_uri {
-    my ($uri) = @_;
-    say "************* testing $uri";
-    return ctx_request($uri);
-}
-
 ################################################################################
 # Test the index page
 #     URI /
 #     action PGX::VersionCompare::Controller::Root->index
 {
-    my ($res, $c) = init_test_for_uri('/');
+    my $uri = '/';
+    diag "testing $uri" if 0;
+    my ($res, $c) = ctx_request($uri);
     is($c->stash->{title}, 'Welcome', 'title set properly');
 }
 
@@ -57,7 +53,9 @@ sub init_test_for_uri {
 #     URI /compare/8.0.0/8.0.3/?q=Avoid
 #     action PGX::VersionCompare::Controller::Compare->compare
 {
-    my ($res, $c) = init_test_for_uri('/compare/8.0.0/8.0.3/?q=Avoid');
+    my $uri = '/compare/8.0.0/8.0.3/?q=Avoid';
+    diag "testing $uri" if 0;
+    my ($res, $c) = ctx_request($uri);
 
     my $expected = {
         '8.3' => [
@@ -68,7 +66,8 @@ sub init_test_for_uri {
             4,
             5,
             6,
-            7
+            7,
+            8,
         ],
         '8.2' => [
             0,
@@ -84,7 +83,8 @@ sub init_test_for_uri {
             10,
             11,
             12,
-            13
+            13,
+            14,
         ],
         '8.0' => [
             0,
@@ -108,7 +108,8 @@ sub init_test_for_uri {
             18,
             19,
             20,
-            21
+            21,
+            22,
         ],
         '8.1' => [
             0,
@@ -128,14 +129,29 @@ sub init_test_for_uri {
             14,
             15,
             16,
-            17
+            17,
+            18,
         ],
         '8.4' => [
+            0,
+            1,
+        ],
+        '8.5' => [
             0
         ]
     };
 
     my $SCALAR = '';
+
+    diag(Data::Dumper->Dump(
+        [$c->stash],
+        ['stash']))
+      if 1;
+    
+    diag(Data::Dumper->Dump(
+        [$c->{known_versions_ref}],
+        ['known_versions_ref']))
+      if 1;
     stash_var_ok($c, 'known_versions_ref', 'HASH',   $expected);
     stash_var_ok($c, 'q',                  'SCALAR', 'Avoid');
     stash_var_ok($c, 'major_1',            'SCALAR', '8.0');
@@ -143,6 +159,7 @@ sub init_test_for_uri {
     stash_var_ok($c, 'minor_1',            'SCALAR', 0);
     stash_var_ok($c, 'minor_2',            'SCALAR', 3);
     stash_var_ok($c, 'fixes_sth',          'DBI::st');
+
     stash_var_ok($c, 'template',           'SCALAR', 'compare_result');
 }
 
@@ -151,7 +168,9 @@ sub init_test_for_uri {
 #     URI /compare
 #     action PGX::VersionCompare::Controller::Compare->compare
 {
-    my ($res, $c) = init_test_for_uri('/compare');
+    my $uri = '/compare';
+    diag "testing $uri" if 0;
+    my ($res, $c) = ctx_request($uri);
 
     is(
         $c->stash->{template},
@@ -169,9 +188,10 @@ sub init_test_for_uri {
 #     URI /compare/8.0.0
 #     action PGX::VersionCompare::Controller::Compare->compare
 {
-
-    my ($res, $c) = init_test_for_uri('/compare/8.0.0');
-
+    my $uri = '/compare/8.0.0';
+    diag "testing $uri" if 0;
+    my ($res, $c) = ctx_request($uri);
+    
     is(
         $c->stash->{template},
         'compare',

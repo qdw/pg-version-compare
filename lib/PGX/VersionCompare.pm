@@ -6,6 +6,9 @@ use feature ':5.10';
 use utf8;
 
 use Catalyst::Runtime 5.80;
+use Moose;
+use DBIx::Connector;
+use Exception::Class::DBI;
 
 # Set flags and add plugins for the application
 #
@@ -27,6 +30,16 @@ use Catalyst (
 
 our $VERSION = '0.01';
 
+has conn => (is => 'ro', default => sub {
+    DBIx::Connector->new( @{ shift->config->{dbi} }{qw(dsn user pass)}, {
+        PrintError     => 0,
+        RaiseError     => 0,
+        HandleError    => Exception::Class::DBI->handler,
+        AutoCommit     => 1,
+        pg_enable_utf8 => 1,
+    });
+});
+
 # Configure the application.
 #
 # Note that settings in pgx_versioncompare.conf (or other external
@@ -38,7 +51,7 @@ our $VERSION = '0.01';
 
 __PACKAGE__->config(
     name                   => 'PGX::VersionCompare',
-    default_view           => 'TD',
+    default_view           => 'HTML',
     'Plugin::ConfigLoader' => { file => 'conf/dev.yml' },
 );
 

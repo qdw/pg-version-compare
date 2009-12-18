@@ -7,7 +7,7 @@ use utf8;
 
 use Carp;
 
-use Test::More tests => 73;
+use Test::More tests => 181;
 #use Test::More 'no_plan';
 use Test::More::UTF8;
 use Test::XML;
@@ -235,7 +235,10 @@ sub test_basics_of_compare {
         }, 'found "fixes" div:');
     }, '************* Finished basic compare test; found "result" div');
 
-    $_->ok(0, 'test stickiness of form fields');
+    TODO: {
+        local $TODO = 'need to write tests that test form field stickiness';
+        ok(0, 'form fields are sticky');
+    }
 }
 
 # Test the compare page's behavior when only one version number is passed
@@ -247,7 +250,7 @@ sub test_basics_of_compare {
     );
     test_basics_of_compare($tx);
     $tx->is(
-        '//p[@id="error"]',
+        '//p[@class="error"]',
         'In order to compare versions, you must provide two version numbers.  You provided only one.',
         'pass only one version, get the expected error message'
     );

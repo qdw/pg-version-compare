@@ -146,12 +146,12 @@ sub stash_var_ok {
     diag(Data::Dumper->Dump(
         [$c->stash],
         ['stash']))
-      if 1;
-    
+      if 0;
+
     diag(Data::Dumper->Dump(
         [$c->{known_versions_ref}],
         ['known_versions_ref']))
-      if 1;
+      if 0;
     stash_var_ok($c, 'known_versions_ref', 'HASH',   $expected);
     stash_var_ok($c, 'q',                  'SCALAR', 'Avoid');
     stash_var_ok($c, 'major_1',            'SCALAR', '8.0');
@@ -177,7 +177,7 @@ sub stash_var_ok {
         'compare',
         q(no input, so template is just 'compare', not 'compare_result')
     );
-    
+
      map { ok(!exists $c->stash->{$_}, "no $_ in stash") }
          qw( major_1 major_2 minor_1 minor_2 q fixes_sth);
 }
@@ -191,7 +191,7 @@ sub stash_var_ok {
     my $uri = '/compare/8.0.0';
     diag "testing $uri" if 0;
     my ($res, $c) = ctx_request($uri);
-    
+
     is(
         $c->stash->{template},
         'compare',

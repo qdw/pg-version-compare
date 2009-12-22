@@ -93,20 +93,17 @@ Return a hashref mapping major versions to minor versions, like this:
 sub get_known_versions_ref {
     my ($class, $conn) = @_;
 
-    my $dbh = $conn->dbh();
-    my @major_versions = @{ $dbh->selectcol_arrayref(<<'    END_MAJOR_SELECT') };
-        SELECT * FROM major_versions();
-    END_MAJOR_SELECT
-
-    my %retval;
-    for my $major_version (@major_versions) {
-        my @minor_versions = @{ $dbh->selectcol_arrayref(<<"        END_MINOR_SELECT")};
-            SELECT * FROM minor_versions('$major_version');
-        END_MINOR_SELECT
-        $retval{$major_version} = \@minor_versions;
-    }
-
-    return \%retval;
+    $conn->run(fixup => sub {
+        my %versions;
+        my $dbh = shift;
+        my $sth = $dbh->prepare('SELECT * FROM minor_versions(?)');
+        for my $major (@{ $dbh->selectcol_arrayref(
+            'SELECT * FROM major_versions()'
+        )}) {
+            $versions{$major} = $dbh->selectcol_arrayref($sth, undef, $major);
+        }
+        return \%versions;
+    });
 }
 
 1;

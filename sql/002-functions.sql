@@ -20,14 +20,10 @@ DECLARE
     vversion  TEXT := CASE WHEN strpos(major_version, '.') > 0
                      THEN major_version
                      ELSE major_version || '.0' END;
-    vmajor    INT;
-    vsuper    INT;
-    ts_string TEXT;
+    vsuper    INT  := substring(vversion from $x$(\d+)\.\d+$x$)::INT;
+    vmajor    INT  := substring(vversion from $x$\d+\.(\d+)$x$)::INT;
+    ts_string TEXT := parse_fti_string(text_search);
 BEGIN
-    vsuper := substring(vversion from $x$(\d+)\.\d+$x$)::INT;
-    vmajor := substring(vversion from $x$\d+\.(\d+)$x$)::INT;
-    ts_string := parse_fti_string(text_search);
-
     IF ts_string <> '' THEN
         RETURN QUERY
         SELECT vversion || '.' || minor::TEXT, fix_desc

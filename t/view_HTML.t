@@ -92,7 +92,7 @@ sub test_basics {
             $_->is('count(./*)', 5, 'It should have five sub-elements');
             $_->is(
                 './span[1]',
-                '© 2009 PostgreSQL Experts Inc.',
+                '© 2009–' . ((localtime(time))[5] + 1900) . ' PostgreSQL Experts Inc.',
                 'First should be copyright',
             );
             # XXX Update URL when it's finalized

@@ -89,7 +89,7 @@ BEGIN {
                     div {
                         id is 'ftr';
                         span {
-                            '© ' . ((localtime(time))[5] + 1900)
+                            '© 2009–' . ((localtime(time))[5] + 1900)
                                    . ' PostgreSQL Experts Inc.';
                         };
                         # XXX Update these URLs when they're finalized

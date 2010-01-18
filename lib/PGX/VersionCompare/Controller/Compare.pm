@@ -85,7 +85,6 @@ sub compare :Path('/compare') {
 
     if (!defined $v1 && !defined $v2) {
         # No versions given.  That means we present the query section only.
-        #$c->view('TD')->template('compare'); #FIXME: remove.
         $c->stash('template', 'compare');
     }
     elsif (defined $v1 && defined $v2) {
@@ -104,10 +103,15 @@ sub compare :Path('/compare') {
         $c->stash->{fixes_sth} = $conn->run(fixup => sub {
             my $sth = shift->prepare(q{SELECT * FROM get_fixes(?, ?, ?, ?)});
             $sth->execute( $major_1, $minor_1, $minor_2, $q);
-            $sth;
+            return $sth;
+        });
+
+        $c->stash->{upgrade_warnings_sth} = $conn->run(fixup => sub {
+            my $sth = shift->prepare(q{SELECT * FROM get_upgrade_warnings(?, ?, ?)});
+            $sth->execute( $major_1, $minor_1, $minor_2);
+            return $sth;
         });
         
-        #$c->view('TD')->template('compare_result'); #FIXME:  remove
         $c->stash('template', 'compare_result');
     }
     else {

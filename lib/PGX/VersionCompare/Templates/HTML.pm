@@ -271,6 +271,7 @@ database (via the $various_sth variables).
 template compare_result => sub {
     my ($self, $args) = @_;
     my $fixes_sth = $args->{fixes_sth};
+    my $upgrade_warnings_sth = $args->{upgrade_warnings_sth};
 
     with_query_section {
         div {
@@ -282,9 +283,22 @@ template compare_result => sub {
                 table {
                     class is 'fixes';
                     #FIXME:  When there are 0 fixes (e.g. when you use a search term that doesn't match anything), you get this:  <table class="fixes">0</table>.  WTF?  Template::Declare quirk?
-                    row { th {'Fix'}; th {'Introduced in';}; };
+                    row { th {'Fix'}; th {'Introduced in'}; };
                     while (my ($version, $fix) = $fixes_sth->fetchrow_array()) {
                         row { cell {$fix}; cell {$version}; };
+                    }
+                };
+            };
+
+            div {
+                id is 'upgrade_warnings';
+                # FIXME:  If no upgrade warnings, say 'no warnings found'
+                table {
+                    class is 'upgrade_warnings';
+                    row { th {'Warning'}; th {'Version'}; };
+                    while (my ($version, $warning)
+                            = $upgrade_warnings_sth->fetchrow_array()) {
+                        row { cell {$warning}; cell {$version}; };
                     }
                 };
             };

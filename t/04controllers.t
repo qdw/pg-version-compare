@@ -7,7 +7,7 @@ use feature 'say';
 use Catalyst::Test 'PGX::VersionCompare';
 use Data::Dumper;
 use Test::Exception;
-use Test::More tests => 26;
+use Test::More tests => 27;
 
 sub stash_var_ok {
     my ($c, $stash_var_name, $expected_type, $expected_value) = @_;
@@ -152,13 +152,14 @@ sub stash_var_ok {
         [$c->{known_versions_ref}],
         ['known_versions_ref']))
       if 0;
-    stash_var_ok($c, 'known_versions_ref', 'HASH',   $expected);
-    stash_var_ok($c, 'q',                  'SCALAR', 'Avoid');
-    stash_var_ok($c, 'major_1',            'SCALAR', '8.0');
-    stash_var_ok($c, 'major_2',            'SCALAR', '8.0');
-    stash_var_ok($c, 'minor_1',            'SCALAR', 0);
-    stash_var_ok($c, 'minor_2',            'SCALAR', 3);
-    stash_var_ok($c, 'fixes_sth',          'DBI::st');
+    stash_var_ok($c, 'known_versions_ref',   'HASH',   $expected);
+    stash_var_ok($c, 'q',                    'SCALAR', 'Avoid');
+    stash_var_ok($c, 'major_1',              'SCALAR', '8.0');
+    stash_var_ok($c, 'major_2',              'SCALAR', '8.0');
+    stash_var_ok($c, 'minor_1',              'SCALAR', 0);
+    stash_var_ok($c, 'minor_2',              'SCALAR', 3);
+    stash_var_ok($c, 'fixes_sth',            'DBI::st');
+    stash_var_ok($c, 'upgrade_warnings_sth', 'DBI::st');
 
     stash_var_ok($c, 'template',           'SCALAR', 'compare_result');
 }

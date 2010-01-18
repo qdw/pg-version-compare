@@ -13,9 +13,7 @@ PGX::VersionCompare::View::TD::Compare - nothing here right now
 
 =head1 Description
 
-See package PGX::VersionCompare::View::TD::Root.  That's where templates
-must be defined for now, till someone bothers pulling its wrapper, wrap, into
-a separate module.
+See package PGX::VersionCompare::Templates::HTML.
 
 =head1 Templates
 

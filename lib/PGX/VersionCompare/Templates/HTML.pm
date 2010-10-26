@@ -67,6 +67,12 @@ BEGIN {
                     type => 'text/css',
                     rel  => 'stylesheet'
                 } };
+                link { attr {
+                    href => '/ui/css/pg-version-compare.css',
+                    type => 'text/css',
+                    rel  => 'stylesheet'
+                } };
+                
             };
             body {
                 div {
@@ -278,30 +284,35 @@ template compare_result => sub {
             id is 'result';
 
             div {
-                id is 'fixes';
-                # FIXME:  If no fixes, say 'no diffs found'
-                table {
-                    class is 'fixes';
-                    #FIXME:  When there are 0 fixes (e.g. when you use a search term that doesn't match anything), you get this:  <table class="fixes">0</table>.  WTF?  Template::Declare quirk?
-                    row { th {'Fix'}; th {'Introduced in'}; };
-                    while (my ($version, $fix) = $fixes_sth->fetchrow_array()) {
-                        row { cell {$fix}; cell {$version}; };
-                    }
-                };
-            };
-
-            div {
                 id is 'upgrade_warnings';
                 # FIXME:  If no upgrade warnings, say 'no warnings found'
                 table {
                     class is 'upgrade_warnings';
-                    row { th {'Warning'}; th {'Version'}; };
+                    row {
+                        th {'Upgrade warning'}; th {'For Installing Version'};
+                    };
                     while (my ($version, $warning)
                             = $upgrade_warnings_sth->fetchrow_array()) {
                         row { cell {$warning}; cell {$version}; };
                     }
                 };
             };
+
+            div {
+                id is 'fixes';
+                # FIXME:  If no fixes, say 'no diffs found'
+                table {
+                    class is 'fixes';
+                    #FIXME:  When there are 0 fixes (e.g. when you use a search term that doesn't match anything), you get this:  <table class="fixes">0</table>.  WTF?  Template::Declare quirk?
+                    row {
+                        th {'Fix'}; th {'Introduced in Version'};
+                    };
+                    while (my ($version, $fix) = $fixes_sth->fetchrow_array()) {
+                        row { cell {$fix}; cell {$version}; };
+                    }
+                };
+            };
+
         };
 
     } $self->c;

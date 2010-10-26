@@ -8,7 +8,6 @@ use parent 'Catalyst::Controller';
 
 use PGX::VersionCompare::Helpers;
 use aliased 'PGX::VersionCompare::Helpers' => 'H';
-use List::Util qw( first );
 
 =head1 Name
 
@@ -75,7 +74,7 @@ for fetching.
 =cut
 sub compare :Path('/compare') {
     my ($self, $c, $v1, $v2) = @_;
-    my $q = first {defined $_} $c->req->params->{'q'}, '';
+    my $q = $c->req->params->{'q'} // '';
     my $conn = $c->conn;
     $c->stash(known_versions_ref => $conn->run(fixup => sub {
         H->get_known_versions_ref($conn);
